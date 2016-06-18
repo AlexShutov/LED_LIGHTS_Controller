@@ -15,6 +15,10 @@ CommandReceiver::CommandReceiver()
 {
 	g_index = 0;
 	db_index = 0;
+	// dummy values
+	commandToSend.setBufferPtr((char*) data_buffer);
+	commandToSend.setCommandCode(-1);
+	commandToSend.setDataBlockSize(0);
 } //CommandReceiver
 
 // default destructor
@@ -28,6 +32,10 @@ void CommandReceiver::setSourceOfData(SourceOfData* pSource){
 	}
 }
 
+void CommandReceiver::setCommandExecutor(CommandExecutor* pExec){
+	pExecutor = pExec;
+}
+
 void CommandReceiver::receiveCommand(){
 	
   pSourceOfData->resetDataSource();
@@ -39,15 +47,22 @@ void CommandReceiver::receiveCommand(){
         if(g_index == INFO_HEADER_SIZE) {
 		  read_data_chunk();
 		  CommandHeader* pH = (CommandHeader*) g_buffer;
+		  // executor should verify if command is correct, not receiver
+		  /*
 		  if (pH->commandCode >= 4){
 			  acknowledgeCommand(false);
 			  return;
 		  }
-		  // handle command here
+		  */
+		  // command is received, handle it
 		  uint8_t commandCode = pH->commandCode;
-		  if (commandCode == 1){
-			  Color* pc = (Color*) data_buffer;
-			  RGB_Led::setColor(pc);
+		  commandToSend.setCommandCode(pH->commandCode);
+		  commandToSend.setDataBlockSize(pH->dataSize);
+		  if (pExecutor){
+			  bool success = true;
+			  success = pExecutor->executeCommand(&commandToSend);
+			  // send result of processing command
+			  acknowledgeCommand(success);
 		  }
 		g_index = 0;
 	  }

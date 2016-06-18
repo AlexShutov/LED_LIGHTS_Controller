@@ -11,8 +11,11 @@
 #include "../src/Utils/operators.h"
 #include "LED_RGB_Driver/RGB_Led.h"
 #include "../src/comm/SourceOfData.h"
-#include "../src/comm/UartSource.h"
+#include "../src/comm/comm_sources/UartSource.h"
 #include "../src/comm/CommandReceiver.h"
+
+#include "../src/comm/comm_execs/CompositeChainExecutor.h"
+#include "../src/comm/comm_execs/ExecChangeColor.h"
 
 
 extern "C" {
@@ -30,15 +33,24 @@ int main(void)
 	c.blue = 0;
     /* Replace with your application code */
 	
-	UartSource us;
-	SourceOfData* ps  = &us;
-	ps->initSource();
-	CommandReceiver cr;
-	cr.setSourceOfData(ps);
+	UartSource uartSource;
+	SourceOfData* dataSource  = &uartSource;
+	dataSource->initSource();
+	
+	// create command receiver and executor chain
+	CommandReceiver commandReceiver;
+	CompositeChainExecutor execChain;
+	ExecChangeColor commChangeColor;
+	
+	execChain.addExecutor(&commChangeColor);
+	
+	// register data source and exec chain in command receiver
+	commandReceiver.setSourceOfData(dataSource);
+	commandReceiver.setCommandExecutor(&execChain);
 	
 	while (1) 
     {		
-		cr.receiveCommand();
+		commandReceiver.receiveCommand();
     }
 }
 

@@ -254,10 +254,34 @@
     <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\comm\CommandExecutor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\CommandExecutor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\comm\CommandReceiver.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\comm\CommandReceiver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\CompositeChainExecutor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\CompositeChainExecutor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\ExecChangeColor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\ExecChangeColor.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_sources\UartSource.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_sources\UartSource.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\comm\IncomingCommand.cpp">
@@ -270,12 +294,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\comm\SourceOfData.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\comm\UartSource.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\comm\UartSource.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\hardware.h">
@@ -421,6 +439,8 @@
     <Folder Include="src\ASF\mega\utils\" />
     <Folder Include="src\ASF\mega\utils\assembler\" />
     <Folder Include="src\ASF\mega\utils\preprocessor\" />
+    <Folder Include="src\comm\comm_sources" />
+    <Folder Include="src\comm\comm_execs" />
     <Folder Include="src\config\" />
     <Folder Include="src\LED_RGB_Driver" />
     <Folder Include="src\include" />

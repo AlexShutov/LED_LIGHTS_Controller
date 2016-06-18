@@ -9,7 +9,7 @@
 #ifndef __UARTSOURCE_H__
 #define __UARTSOURCE_H__
 
-#include "SourceOfData.h"
+#include "../src/comm/SourceOfData.h"
 
 class UartSource : public SourceOfData
 {

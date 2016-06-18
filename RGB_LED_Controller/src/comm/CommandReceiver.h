@@ -11,8 +11,8 @@
 
 #include <avr/io.h>
 #include "SourceOfData.h"
-#include "../src/LED_RGB_Driver/RGB_Led.h"
-
+#include "IncomingCommand.h"
+#include "CommandExecutor.h"
 
 #define DATA_BUFFER_SIZE 200
 #define INFO_HEADER_SIZE sizeof(CommandHeader) 
@@ -35,15 +35,19 @@ public:
 protected:
 private:
 
-	SourceOfData* pSourceOfData;
-	Color c;	
+	SourceOfData* pSourceOfData;	
 	//! Input buffer
 	uint8_t g_buffer[INFO_HEADER_SIZE];
 	uint8_t data_buffer[DATA_BUFFER_SIZE];
 	//! Input index
 	uint8_t g_index;
 	uint8_t db_index;
-
+	
+	// will execute parsed command
+	CommandExecutor* pExecutor;
+	// here we don't have concurrency, so use single
+	// command for each CommandReceiver instance
+	IncomingCommand commandToSend;
 
 //functions
 public:
@@ -51,6 +55,7 @@ public:
 	~CommandReceiver();
 	
 	void setSourceOfData(SourceOfData* pSource);
+	void setCommandExecutor(CommandExecutor* pExec);
 	void receiveCommand();
 	
 protected:

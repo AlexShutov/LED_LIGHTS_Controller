@@ -11,6 +11,12 @@
 
 #include <avr/io.h>
 
+/************************************************************************/
+/* Part of 'Command' pattern. Each command coming from UART (or any other
+/* source is wrapped by this class, which have command code and 
+/* pointer to command buffer and size of data block.
+/* Command executor knows about data size, but received size might differ.
+/************************************************************************/
 class IncomingCommand
 {
 //variables
