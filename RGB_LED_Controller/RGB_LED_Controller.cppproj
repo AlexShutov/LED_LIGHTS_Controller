@@ -254,6 +254,30 @@
     <Compile Include="main.cpp">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\comm\CommandReceiver.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\CommandReceiver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\IncomingCommand.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\IncomingCommand.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\SourceOfData.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\SourceOfData.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\UartSource.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\UartSource.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\hardware.h">
       <SubType>compile</SubType>
     </Compile>
@@ -278,15 +302,39 @@
     <Compile Include="src\LED_RGB_Driver\RGB_LED_Driver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\UART\uart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\UART\uart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\UART\uart_defs.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\UART\uart_format.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\UART\uart_print.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\UART\uart_stuff.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\UART\utility.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\Utils\LogicAnalyzerDebug.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\Utils\Operators.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\Utils\operators.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\Utils\PortUtils.c">
       <SubType>compile</SubType>
     </Compile>
-    <None Include="src\asf.h">
-      <SubType>compile</SubType>
-    </None>
     <None Include="src\config\conf_board.h">
       <SubType>compile</SubType>
     </None>
@@ -376,6 +424,8 @@
     <Folder Include="src\config\" />
     <Folder Include="src\LED_RGB_Driver" />
     <Folder Include="src\include" />
+    <Folder Include="src\comm" />
+    <Folder Include="src\UART" />
     <Folder Include="src\Utils" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />

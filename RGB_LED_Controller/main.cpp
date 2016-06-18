@@ -5,41 +5,40 @@
  * Author : Alex
  */ 
 
+#include <avr/delay.h>
 #include <avr/io.h>
 #include "compiler.h"
+#include "../src/Utils/operators.h"
 #include "LED_RGB_Driver/RGB_Led.h"
-#include <avr/delay.h>
+#include "../src/comm/SourceOfData.h"
+#include "../src/comm/UartSource.h"
+#include "../src/comm/CommandReceiver.h"
+
 
 extern "C" {
-	#include "LED_RGB_Driver/RGB_LED_Driver.h"
-};
-
-
+	#include "../src/include/uart_stuff.h"
+	};
 
 int main(void)
 {
 	RGB_Led::init();
-	LEDColor color;
-	color.red = 50;
-	color.green = 20;
-	color.blue = 30;
-	setColor(&color);
-	
+	uartInit();
+
 	Color c;
-	c.red = 50;
+	c.red = 0;
 	c.green = 0;
 	c.blue = 0;
-	RGB_Led::setColor(&c);
-	
-	
-	
     /* Replace with your application code */
-    while (1) 
-    {
-		_delay_ms(5000);
-		RGB_Led::nextRandomColor();
-		
-		
+	
+	UartSource us;
+	SourceOfData* ps  = &us;
+	ps->initSource();
+	CommandReceiver cr;
+	cr.setSourceOfData(ps);
+	
+	while (1) 
+    {		
+		cr.receiveCommand();
     }
 }
 
