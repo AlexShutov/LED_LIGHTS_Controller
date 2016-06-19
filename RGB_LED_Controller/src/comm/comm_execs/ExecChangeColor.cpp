@@ -24,7 +24,4 @@ bool ExecChangeColor::executeCommand(IncomingCommand* pCommand){
 	return false;
 }
 
-uint8_t ExecChangeColor::getCommandCode(){
-	return COMMAND_CODE_CHANGE_COLOR;
-}
 

@@ -14,6 +14,9 @@
 
 class CommandExecutor
 {
+private:
+	uint8_t commandCode;
+	
 //functions
 public:
 	virtual ~CommandExecutor();
@@ -22,7 +25,8 @@ public:
 	/*  get command code of supported command. Every executor support only one 
 		command type
 	*/
-	virtual uint8_t getCommandCode() = 0;
+	uint8_t getCommandCode();
+	void setCommandCode(uint8_t code);
 	
 }; //CommandExecutor
 

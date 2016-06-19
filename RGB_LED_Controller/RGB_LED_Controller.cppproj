@@ -266,6 +266,12 @@
     <Compile Include="src\comm\CommandReceiver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\comm\CommExecutorFacade.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\CommExecutorFacade.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\comm\comm_execs\CompositeChainExecutor.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -318,6 +324,18 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\LED_RGB_Driver\RGB_LED_Driver.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\TimedPulse\TimedPulse.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\TimedPulse\TimedPulse.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\TimedPulse\TimeIntervalGenerator.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\TimedPulse\TimeIntervalGenerator.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\UART\uart.c">
@@ -445,6 +463,7 @@
     <Folder Include="src\LED_RGB_Driver" />
     <Folder Include="src\include" />
     <Folder Include="src\comm" />
+    <Folder Include="src\TimedPulse" />
     <Folder Include="src\UART" />
     <Folder Include="src\Utils" />
   </ItemGroup>

@@ -10,47 +10,76 @@
 #include "compiler.h"
 #include "../src/Utils/operators.h"
 #include "LED_RGB_Driver/RGB_Led.h"
-#include "../src/comm/SourceOfData.h"
-#include "../src/comm/comm_sources/UartSource.h"
-#include "../src/comm/CommandReceiver.h"
 
-#include "../src/comm/comm_execs/CompositeChainExecutor.h"
-#include "../src/comm/comm_execs/ExecChangeColor.h"
+#include "../src/comm/CommExecutorFacade.h"
+#include "../src/TimedPulse/TimeIntervalGenerator.h"
 
+using TimeIntervalGeneration::TimeIntervalGenerator;
 
 extern "C" {
 	#include "../src/include/uart_stuff.h"
-	};
+};
+
+Color c;
+void f1(uint8_t pulseIndex){
+	c.red = 255;
+	c.green = 0;
+	c.blue = 0;
+	RGB_Led::setColor(&c);
+}
+void f2(uint8_t pulseIndex){
+	c.red = 0;
+	c.green = 255;
+	c.blue = 0;
+	RGB_Led::setColor(&c);
+}
+
+class Callback : public TimeIntervalGeneration::EventCallback {
+public:
+	virtual void onPulseStarted(){
+		c.red = 255;
+		c.green = 0;
+		c.blue = 0;
+		RGB_Led::setColor(&c);
+	}
+	
+	virtual void onPulseEnded(){
+		c.red = 0;
+		c.green = 255;
+		c.blue = 123;
+		RGB_Led::setColor(&c);
+	}
+};
 
 int main(void)
 {
 	RGB_Led::init();
 	uartInit();
-
 	Color c;
 	c.red = 0;
 	c.green = 0;
 	c.blue = 0;
     /* Replace with your application code */
 	
-	UartSource uartSource;
-	SourceOfData* dataSource  = &uartSource;
-	dataSource->initSource();
+	TimeIntervalGenerator::setupTimedPulse();
+	TimeIntervalGenerator tg;
 	
-	// create command receiver and executor chain
-	CommandReceiver commandReceiver;
-	CompositeChainExecutor execChain;
-	ExecChangeColor commChangeColor;
+	TimeInterval ti;
+	ti.milliseconds = 0;	
+	ti.seconds = 0;
+	ti.minutes = 1;
+	Callback cb;
 	
-	execChain.addExecutor(&commChangeColor);
+	tg.addPulse((TimeIntervalGeneration::TimeInterval*) &ti, &cb, 0, true);
 	
-	// register data source and exec chain in command receiver
-	commandReceiver.setSourceOfData(dataSource);
-	commandReceiver.setCommandExecutor(&execChain);
+
+	CommExecutorFacade facade;
+	facade.initialize();
 	
 	while (1) 
     {		
-		commandReceiver.receiveCommand();
+		facade.pollForCommand();
+		//commandReceiver.receiveCommand();
     }
 }
 

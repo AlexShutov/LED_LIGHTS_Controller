@@ -26,7 +26,6 @@ public:
 	~ExecChangeColor();
 	
 	virtual bool executeCommand(IncomingCommand* pCommand);
-	virtual uint8_t getCommandCode();
 	
 protected:
 private:
