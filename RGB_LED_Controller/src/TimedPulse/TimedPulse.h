@@ -10,12 +10,8 @@
 #define TIMEDTOGGLESWITCH_H_
 #include <avr/io.h>
 #include "compiler.h"
+#include "TimeInterval.h"
 
-typedef struct {
-	uint16_t milliseconds;
-	uint8_t seconds;
-	uint8_t minutes;
-}TimeInterval;
 bool equals(TimeInterval* i1, TimeInterval* i2);
 bool isZero(TimeInterval* pTimeInterval);
 

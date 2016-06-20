@@ -13,8 +13,12 @@
 
 #include "../src/comm/CommExecutorFacade.h"
 #include "../src/TimedPulse/TimeIntervalGenerator.h"
+#include "../src/TimedPulse/EventCallbackDecorator.h"
+#include "../src/TimedSequence/SequencePlayer.h"
 
 using TimeIntervalGeneration::TimeIntervalGenerator;
+using TimeIntervalGeneration::EventCallbackDecorator;
+using TimeIntervalGeneration::SequencePlayer;
 
 extern "C" {
 	#include "../src/include/uart_stuff.h"
@@ -38,17 +42,42 @@ class Callback : public TimeIntervalGeneration::EventCallback {
 public:
 	virtual void onPulseStarted(){
 		c.red = 255;
-		c.green = 0;
-		c.blue = 0;
+		c.green = 255;
+		c.blue = 255;
 		RGB_Led::setColor(&c);
 	}
 	
 	virtual void onPulseEnded(){
-		c.red = 0;
-		c.green = 255;
-		c.blue = 123;
-		RGB_Led::setColor(&c);
+		
 	}
+	virtual void setPulseNo(uint8_t pulseNo){}
+	
+};
+
+class ColorCallback : public TimeIntervalGeneration::EventCallback {
+public:
+	virtual void onPulseStarted(){
+		Color* pC = pColor + pulseNumber;
+		RGB_Led::setColor(pC);
+	}	
+	
+	virtual void onPulseEnded(){
+		
+	}
+	virtual void setPulseNo(uint8_t pulseNo){
+		pulseNumber = pulseNo;
+	}
+	void setColor(Color* pC, uint8_t size){
+		pColor = pC;
+		colorArSize = size;
+	}
+	
+private:
+	
+	uint8_t pulseNumber;
+	Color* pColor;
+	uint8_t colorArSize;
+
 };
 
 int main(void)
@@ -62,23 +91,63 @@ int main(void)
     /* Replace with your application code */
 	
 	TimeIntervalGenerator::setupTimedPulse();
-	TimeIntervalGenerator tg;
 	
 	TimeInterval ti;
 	ti.milliseconds = 0;	
 	ti.seconds = 0;
 	ti.minutes = 1;
-	Callback cb;
 	
-	tg.addPulse((TimeIntervalGeneration::TimeInterval*) &ti, &cb, 0, true);
+	Color cols[3];
 	
-
+	Color* pc = &cols[0];
+	pc->red = 255;
+	pc->green = 0;
+	pc->blue = 0;
+	pc++;
+	
+	pc->red = 0;
+	pc->green = 255;
+	pc->blue = 0;
+	pc++;
+	
+	pc->red = 0;
+	pc->green = 0;
+	pc->blue = 255;
+	ColorCallback colorCallback[3];
+	colorCallback[0].setColor(cols, 3);
+	colorCallback[1].setColor(cols, 3);
+	colorCallback[2].setColor(cols, 3);
+	
+	TimeInterval durs[3];
+	TimeInterval* pt = durs;
+	pt->milliseconds = 0;
+	pt->seconds = 1;
+	pt->minutes = 0;
+	pt++;
+	
+	pt->milliseconds = 0;
+	pt->seconds = 1;
+	pt->minutes = 0;
+	pt++;
+	
+	pt->milliseconds = 0;
+	pt->seconds = 1;
+	pt->minutes = 0;
+	
+	SequencePlayer sp(0);
+	sp.useUniformItems(&colorCallback[1]);
+	//sp.useItemsOfDifferentTypes(colorCallback, 3);
+	
+	Callback terminate;
+	//sp.setTerminationCallback(&terminate);
+	sp.setupSequence(durs, 3, true);
+	
 	CommExecutorFacade facade;
 	facade.initialize();
 	
 	while (1) 
     {		
-		facade.pollForCommand();
+		//facade.pollForCommand();
 		//commandReceiver.receiveCommand();
     }
 }

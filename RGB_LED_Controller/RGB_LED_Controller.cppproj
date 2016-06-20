@@ -20,10 +20,10 @@
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
-    <RamSnippetAddress />
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
     <preserveEEPROM>true</preserveEEPROM>
-    <OverrideVtorValue />
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
     <BootSegment>2</BootSegment>
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
@@ -326,16 +326,31 @@
     <Compile Include="src\LED_RGB_Driver\RGB_LED_Driver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\TimedPulse\EventCallbackDecorator.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\TimedPulse\EventCallbackDecorator.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\TimedPulse\TimedPulse.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\TimedPulse\TimedPulse.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\TimedPulse\TimeInterval.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\TimedPulse\TimeIntervalGenerator.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\TimedPulse\TimeIntervalGenerator.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\TimedSequence\SequencePlayer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\TimedSequence\SequencePlayer.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\UART\uart.c">
@@ -463,6 +478,7 @@
     <Folder Include="src\LED_RGB_Driver" />
     <Folder Include="src\include" />
     <Folder Include="src\comm" />
+    <Folder Include="src\TimedSequence" />
     <Folder Include="src\TimedPulse" />
     <Folder Include="src\UART" />
     <Folder Include="src\Utils" />

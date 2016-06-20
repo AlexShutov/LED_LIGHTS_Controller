@@ -12,16 +12,18 @@
 
 extern "C" {
 	#include "TimedPulse.h"
+	#include "TimeInterval.h"
 };
 
 namespace TimeIntervalGeneration {
 	
-extern "C" struct TimeInterval;
 
 class EventCallback{
 public:
 	virtual void onPulseStarted() = 0;	
 	virtual void onPulseEnded() = 0;
+	// is very handy for handling sequence of pulses
+	virtual void setPulseNo(uint8_t pulseNo) = 0;
 };
 
 class TimeIntervalGenerator
@@ -31,7 +33,6 @@ public:
 protected:
 private:
 	
-
 //functions
 public:
 	static void setupTimedPulse(void);
