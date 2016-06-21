@@ -66,15 +66,7 @@ private:
 	// double buffering instead.
 	TimeInterval* pDurationOfItems;
 	
-	// we may want to use uniform items (only color change, for example)
-	// in that case we won't need to store array of callbacks, only one callback
-	// is needed
-	bool isUniformItemsIsBeingUsed;
 	EventCallbackDecorator uniformCallback;
-	// But if you want to use different items as sequence elements, provide
-	// callback buffer, which size is the same, as totalItemCount to
-	// useItemsOfDifferentTypes() method
-	EventCallbackDecorator pDifferentItemsCallbacks[MAX_SEQUENCE_LENGTH];
 	// whether to play sequence in loop mode
 	bool isLooping;
 	// call this callback if we're not in loop mode and sequence ended
@@ -87,8 +79,7 @@ public:
 	~SequencePlayer();
 	
 	// call during setup if you want all items to be of the same type
-	void useUniformItems(EventCallback* pItemCallback);
-	void useItemsOfDifferentTypes(EventCallback* pItemsCallbackBuffer, uint8_t sequenceLength);
+	void setIntervalEndCallback(EventCallback* pItemCallback);
 	void setLoopMode(bool isLoopMode);
 	void setTerminationCallback(EventCallback* pTerminationCallback);
 	void stopPlaying();

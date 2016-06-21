@@ -132,8 +132,7 @@ int main(void)
 	pt->minutes = 0;
 	
 	SequencePlayer sp(0);
-	sp.useUniformItems(&colorCallback[1]);
-	//sp.useItemsOfDifferentTypes(colorCallback, 3);
+	sp.setIntervalEndCallback(&colorCallback[1]);
 	
 	Callback terminate;
 	//sp.setTerminationCallback(&terminate);
