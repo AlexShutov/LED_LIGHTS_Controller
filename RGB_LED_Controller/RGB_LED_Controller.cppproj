@@ -326,6 +326,12 @@
     <Compile Include="src\LED_RGB_Driver\RGB_LED_Driver.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\TimedPulse\EventCalbackCustomActions.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\TimedPulse\EventCalbackCustomActions.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\TimedPulse\EventCallbackDecorator.cpp">
       <SubType>compile</SubType>
     </Compile>

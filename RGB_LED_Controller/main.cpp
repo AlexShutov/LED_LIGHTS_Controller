@@ -15,10 +15,12 @@
 #include "../src/TimedPulse/TimeIntervalGenerator.h"
 #include "../src/TimedPulse/EventCallbackDecorator.h"
 #include "../src/TimedSequence/SequencePlayer.h"
+#include "../src/TimedPulse/EventCalbackCustomActions.h"
 
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallbackDecorator;
 using TimeIntervalGeneration::SequencePlayer;
+using TimeIntervalGeneration::EventCalbackCustomActions;
 
 extern "C" {
 	#include "../src/include/uart_stuff.h"
@@ -41,9 +43,9 @@ void f2(uint8_t pulseIndex){
 class Callback : public TimeIntervalGeneration::EventCallback {
 public:
 	virtual void onPulseStarted(){
-		c.red = 255;
-		c.green = 255;
-		c.blue = 255;
+		c.red = 0;
+		c.green = 0;
+		c.blue = 0;
 		RGB_Led::setColor(&c);
 	}
 	
@@ -115,6 +117,12 @@ int main(void)
 	colorCallback[1].setColor(cols, 3);
 	colorCallback[2].setColor(cols, 3);
 	
+	EventCalbackCustomActions customAction;
+	//customAction.setCustomActions(colorCallback, 3);
+	customAction.setCustomAction(&colorCallback[0], 0);
+	customAction.setCustomAction(&colorCallback[1], 1);
+	customAction.setCustomAction(&colorCallback[2], 2);
+	
 	TimeInterval durs[3];
 	TimeInterval* pt = durs;
 	pt->milliseconds = 0;
@@ -132,11 +140,11 @@ int main(void)
 	pt->minutes = 0;
 	
 	SequencePlayer sp(0);
-	sp.setIntervalEndCallback(&colorCallback[1]);
+	sp.setIntervalEndCallback(&customAction);
 	
 	Callback terminate;
-	//sp.setTerminationCallback(&terminate);
-	sp.setupSequence(durs, 3, true);
+	sp.setTerminationCallback(&terminate);
+	sp.setupSequence(durs, 3, false);
 	
 	CommExecutorFacade facade;
 	facade.initialize();
