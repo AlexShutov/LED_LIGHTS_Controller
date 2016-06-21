@@ -16,6 +16,14 @@ extern "C" {
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallback;
 
+void EventCallback::setPulseNo(uint8_t pulseNo){
+	pulseNumber = pulseNo;
+}
+
+uint8_t EventCallback::getPulseNo(){
+	return pulseNumber;
+}
+
 EventCallback* callbacksForPulses[MAX_PULSES_AT_A_TIME];
 
 void pulseStartCallbackWrapper(uint8_t pulseIndex){

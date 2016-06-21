@@ -57,24 +57,21 @@ public:
 class ColorCallback : public TimeIntervalGeneration::EventCallback {
 public:
 	virtual void onPulseStarted(){
-		Color* pC = pColor + pulseNumber;
+		Color* pC = pColor + getPulseNo();
 		RGB_Led::setColor(pC);
 	}	
 	
 	virtual void onPulseEnded(){
 		
 	}
-	virtual void setPulseNo(uint8_t pulseNo){
-		pulseNumber = pulseNo;
-	}
+	
 	void setColor(Color* pC, uint8_t size){
 		pColor = pC;
 		colorArSize = size;
 	}
 	
 private:
-	
-	uint8_t pulseNumber;
+
 	Color* pColor;
 	uint8_t colorArSize;
 
