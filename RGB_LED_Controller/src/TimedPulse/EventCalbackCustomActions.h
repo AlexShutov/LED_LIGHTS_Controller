@@ -11,6 +11,7 @@
 
 #include "avr/io.h"
 #include "TimeIntervalGenerator.h"
+#include "EventCalbackCustomActions.h"
 
 namespace TimeIntervalGeneration {
 
@@ -22,7 +23,7 @@ class EventCalbackCustomActions : public EventCallback
 public:
 protected:
 private:
-
+	
 	EventCallback* customActions[MAX_CUSTOM_ACTIONS];
 	
 //functions

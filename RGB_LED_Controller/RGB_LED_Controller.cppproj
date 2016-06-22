@@ -359,6 +359,12 @@
     <Compile Include="src\TimedSequence\SequencePlayer.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\TimedSequence\Sequences\SequenceOfFlashes.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\TimedSequence\Sequences\SequenceOfFlashes.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\UART\uart.c">
       <SubType>compile</SubType>
     </Compile>
@@ -486,6 +492,7 @@
     <Folder Include="src\comm" />
     <Folder Include="src\TimedSequence" />
     <Folder Include="src\TimedPulse" />
+    <Folder Include="src\TimedSequence\Sequences" />
     <Folder Include="src\UART" />
     <Folder Include="src\Utils" />
   </ItemGroup>

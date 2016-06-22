@@ -36,7 +36,7 @@ void EventCalbackCustomActions::setCustomActions(EventCallback* pActions,
 												 uint8_t actionsSize)
 {
 	for (uint8_t i = 0; i < actionsSize; ++i){
-		customActions[i] = &pActions[i];
+		setCustomAction(&pActions[i], i);
 		// each action is responsible for one pulse (under its number)
 	}	
 }
