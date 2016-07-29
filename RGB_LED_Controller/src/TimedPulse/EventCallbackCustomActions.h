@@ -16,7 +16,7 @@ namespace TimeIntervalGeneration {
 
 #define MAX_CUSTOM_ACTIONS 20
 
-class EventCalbackCustomActions : public EventCallback
+class EventCallbackCustomActions : public EventCallback
 {
 //variables
 public:
@@ -37,12 +37,12 @@ public:
 	virtual void onPulseEnded();
 	
 	
-	EventCalbackCustomActions();
-	~EventCalbackCustomActions();
+	EventCallbackCustomActions();
+	~EventCallbackCustomActions();
 protected:
 private:
-	EventCalbackCustomActions( const EventCalbackCustomActions &c );
-	EventCalbackCustomActions& operator=( const EventCalbackCustomActions &c );
+	EventCallbackCustomActions( const EventCallbackCustomActions &c );
+	EventCallbackCustomActions& operator=( const EventCallbackCustomActions &c );
 
 }; //EventCalbackCustomActions
 

@@ -6,12 +6,12 @@
 */
 
 
-#include "EventCalbackCustomActions.h"
+#include "EventCallbackCustomActions.h"
 
 using namespace TimeIntervalGeneration;
 
 // default constructor
-EventCalbackCustomActions::EventCalbackCustomActions()
+EventCallbackCustomActions::EventCallbackCustomActions()
 {
 	for(uint8_t i = 0; i < MAX_CUSTOM_ACTIONS; ++i){
 		customActions[i] = 0;
@@ -19,20 +19,20 @@ EventCalbackCustomActions::EventCalbackCustomActions()
 } //EventCalbackCustomActions
 
 // default destructor
-EventCalbackCustomActions::~EventCalbackCustomActions()
+EventCallbackCustomActions::~EventCallbackCustomActions()
 {
 } //~EventCalbackCustomActions
 
-void EventCalbackCustomActions::setCustomAction(EventCallback* pAction, uint8_t actionIndex){
+void EventCallbackCustomActions::setCustomAction(EventCallback* pAction, uint8_t actionIndex){
 	if (actionIndex >= MAX_CUSTOM_ACTIONS) return;
 	customActions[actionIndex] = pAction;
 }
 
-EventCallback* EventCalbackCustomActions::getCustomAction(uint8_t actionIndex){
+EventCallback* EventCallbackCustomActions::getCustomAction(uint8_t actionIndex){
 	return (actionIndex >= MAX_CUSTOM_ACTIONS) ? 0 : customActions[actionIndex];
 }
 
-void EventCalbackCustomActions::setCustomActions(EventCallback* pActions, 
+void EventCallbackCustomActions::setCustomActions(EventCallback* pActions, 
 												 uint8_t actionsSize)
 {
 	for (uint8_t i = 0; i < actionsSize; ++i){
@@ -45,14 +45,14 @@ void EventCalbackCustomActions::setCustomActions(EventCallback* pActions,
 /*                      Inherited methods from callback                 */
 /************************************************************************/
 // dispatch call to custom action which position equals to item index
-void EventCalbackCustomActions::onPulseStarted(){
-	EventCallback* pAction = customActions[getPulseNo()];
-	pAction->setPulseNo(getPulseNo());
+void EventCallbackCustomActions::onPulseStarted(){
+	EventCallback* pAction = customActions[getItemIndex()];
+	pAction->setItemIndex(getItemIndex());
 	pAction->onPulseStarted();
 }
 
-void EventCalbackCustomActions::onPulseEnded(){
-	EventCallback* pAction = customActions[getPulseNo()];
-	pAction->setPulseNo(getPulseNo());
+void EventCallbackCustomActions::onPulseEnded(){
+	EventCallback* pAction = customActions[getItemIndex()];
+	pAction->setItemIndex(getItemIndex());
 	pAction->onPulseEnded();
 }

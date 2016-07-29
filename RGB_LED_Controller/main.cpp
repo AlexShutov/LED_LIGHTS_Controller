@@ -20,7 +20,7 @@
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallbackDecorator;
 using TimeIntervalGeneration::SequencePlayer;
-using TimeIntervalGeneration::EventCalbackCustomActions;
+using TimeIntervalGeneration::EventCallbackCustomActions;
 
 extern "C" {
 	#include "../src/include/uart_stuff.h"
@@ -117,7 +117,7 @@ int main(void)
 	colorCallback[1].setColor(cols, 3);
 	colorCallback[2].setColor(cols, 3);
 	
-	EventCalbackCustomActions customAction;
+	EventCallbackCustomActions customAction;
 	//customAction.setCustomActions(colorCallback, 3);
 	customAction.setCustomAction(&colorCallback[0], 0);
 	customAction.setCustomAction(&colorCallback[1], 1);

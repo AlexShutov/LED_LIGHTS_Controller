@@ -66,6 +66,7 @@ void SequencePlayer::setIntervalEndCallback(EventCallback* pItemCallback){
 	/* SequencePlayer extend EventCallback by itself for handling transitions between
 		sequence items */
 	uniformCallback.setActionAfter(this);
+	/* Player only handles transition to next item, here is no need in 'actionAfter' */
 	uniformCallback.setActionBefore(0);
 }
 
@@ -118,7 +119,6 @@ void SequencePlayer::onPulseEnded(){
 			return;
 		}
 	}
-	
 	TimeInterval* pNextItem = &pDurationOfItems[currItemPosition];
 	// set pulse index in advance
 	pulseGenerator.stopPulse(pulseIndex, false);
