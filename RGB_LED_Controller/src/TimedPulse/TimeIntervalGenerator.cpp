@@ -16,12 +16,12 @@ extern "C" {
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallback;
 
-void EventCallback::setPulseNo(uint8_t pulseNo){
-	pulseNumber = pulseNo;
+void EventCallback::setItemIndex(uint8_t itemIndex){
+	this->itemIndex = itemIndex;
 }
 
-uint8_t EventCallback::getPulseNo(){
-	return pulseNumber;
+uint8_t EventCallback::getItemIndex(){
+	return itemIndex;
 }
 
 EventCallback* callbacksForPulses[MAX_PULSES_AT_A_TIME];

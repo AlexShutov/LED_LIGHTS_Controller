@@ -20,13 +20,14 @@ namespace TimeIntervalGeneration {
 
 class EventCallback{
 private: 
-	uint8_t pulseNumber;	
+	uint8_t itemIndex;	
 public:
 	virtual void onPulseStarted() = 0;	
 	virtual void onPulseEnded() = 0;
-	// is very handy for handling sequence of pulses
-	virtual void setPulseNo(uint8_t pulseNo);
-	virtual uint8_t getPulseNo();
+	/* is very handy for handling sequence of pulses - we simply set index of current
+		item in a sequence */
+	virtual void setItemIndex(uint8_t itemIndex);
+	virtual uint8_t getItemIndex();
 };
 
 class TimeIntervalGenerator

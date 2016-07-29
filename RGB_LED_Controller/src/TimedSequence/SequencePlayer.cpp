@@ -63,6 +63,8 @@ void SequencePlayer::setIntervalEndCallback(EventCallback* pItemCallback){
 	// clear actions in buffer for multi-type sequence
 	// setup callback
 	uniformCallback.setDecoree(pItemCallback);
+	/* SequencePlayer extend EventCallback by itself for handling transitions between
+		sequence items */
 	uniformCallback.setActionAfter(this);
 	uniformCallback.setActionBefore(0);
 }
