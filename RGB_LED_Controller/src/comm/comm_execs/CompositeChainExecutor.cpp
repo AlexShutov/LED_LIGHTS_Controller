@@ -25,11 +25,20 @@ CompositeChainExecutor::~CompositeChainExecutor()
 
 bool CompositeChainExecutor::executeCommand(IncomingCommand* pCommand){
 	uint8_t commandCode = pCommand->getCommandCode();
-	for (uint8_t i = 0; i < chainLenght; ++i){
-		if (execChain[i]->getCommandCode() == commandCode){
-			execChain[i]->executeCommand(pCommand);
-			return true;
-		}
+	CommandExecutor* pFound = getExecutor(commandCode);
+	if (pFound){
+		pFound->executeCommand(pCommand);
+		return true;
+	}
+	return false;
+}
+
+bool CompositeChainExecutor::revertCommand(IncomingCommand* pCommand){
+	uint8_t commandCode = pCommand->getCommandCode();
+	CommandExecutor* pFound = getExecutor(commandCode);
+	if (pFound){
+		pFound->revertCommand(pCommand);
+		return true;
 	}
 	return false;
 }

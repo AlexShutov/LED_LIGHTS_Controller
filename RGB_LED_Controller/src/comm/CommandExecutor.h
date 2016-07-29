@@ -25,6 +25,8 @@ public:
 	/*  get command code of supported command. Every executor support only one 
 		command type
 	*/
+	
+	virtual bool revertCommand(IncomingCommand* pCommand) = 0;
 	uint8_t getCommandCode();
 	void setCommandCode(uint8_t code);
 	

@@ -24,4 +24,8 @@ bool ExecChangeColor::executeCommand(IncomingCommand* pCommand){
 	return false;
 }
 
+bool ExecChangeColor::revertCommand(IncomingCommand* pCommand){
+	
+}
+
 

@@ -29,7 +29,8 @@ public:
 	~CompositeChainExecutor();
 	
 	// 'Chain of commands' pattern
-	bool executeCommand(IncomingCommand* pCommand);
+	virtual bool executeCommand(IncomingCommand* pCommand);
+	virtual bool revertCommand(IncomingCommand* pCommand);
 	/* find first empty place in exec chain and insert exec to into it */
 	bool addExecutor(CommandExecutor* pExec);
 	

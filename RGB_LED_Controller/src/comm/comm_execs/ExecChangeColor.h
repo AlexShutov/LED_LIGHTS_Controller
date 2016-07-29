@@ -26,6 +26,7 @@ public:
 	~ExecChangeColor();
 	
 	virtual bool executeCommand(IncomingCommand* pCommand);
+	virtual bool revertCommand(IncomingCommand* pCommand);
 	
 protected:
 private:
