@@ -15,6 +15,7 @@
 #include "../src/comm/CommandReceiver.h"
 #include "../src/comm/comm_execs/CompositeChainExecutor.h"
 #include "../src/comm/comm_execs/ExecChangeColor.h"
+#include "../src/comm/comm_execs/LightSequenceExecutor.h"
 
 
 /************************************************************************/
@@ -32,8 +33,8 @@ private:
 	CommandReceiver commandReceiver;
 	CompositeChainExecutor execChain;
 	
-	ExecChangeColor commChangeColor;
-	
+	LedCommandExecutors::ExecChangeColor commChangeColor;
+	LedCommandExecutors::LightSequenceExecutor commLightSequence;
 
 //functions
 public:

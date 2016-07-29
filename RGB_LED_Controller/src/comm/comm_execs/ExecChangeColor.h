@@ -11,6 +11,8 @@
 
 #include "../src/comm/CommandExecutor.h"
 
+namespace LedCommandExecutors {
+
 #define COMMAND_CODE_CHANGE_COLOR 0
 
 class ExecChangeColor : public CommandExecutor
@@ -23,7 +25,7 @@ private:
 //functions
 public:
 	ExecChangeColor();
-	~ExecChangeColor();
+	virtual ~ExecChangeColor();
 	
 	virtual bool executeCommand(IncomingCommand* pCommand);
 	virtual bool revertCommand(IncomingCommand* pCommand);
@@ -35,4 +37,5 @@ private:
 
 }; //ExecChangeColor
 
+}
 #endif //__EXECCHANGECOLOR_H__

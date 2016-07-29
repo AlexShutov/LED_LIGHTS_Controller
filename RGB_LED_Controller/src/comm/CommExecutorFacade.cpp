@@ -30,6 +30,12 @@ void CommExecutorFacade::initialize(){
 	// executor (for example, restoring and savong currrent command to eeprom)
 	commandReceiver.setSourceOfData(&uart);
 	
-	commChangeColor.setCommandCode(1);
+	commChangeColor.setCommandCode(COMMAND_CODE_CHANGE_COLOR);
 	execChain.addExecutor(&commChangeColor);
+	
+	commChangeColor.setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
+	execChain.addExecutor(&commLightSequence);
+	
+	
+	
 }
