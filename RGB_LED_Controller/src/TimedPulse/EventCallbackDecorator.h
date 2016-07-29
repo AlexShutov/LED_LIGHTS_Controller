@@ -38,7 +38,7 @@ public:
 	
 	virtual void onPulseStarted();
 	virtual void onPulseEnded();
-	virtual void setPulseNo(uint8_t pulseNo);
+	virtual void setItemIndex(uint8_t pulseNo);
 	
 protected:
 private:

@@ -15,7 +15,7 @@
 #include "../src/TimedPulse/TimeIntervalGenerator.h"
 #include "../src/TimedPulse/EventCallbackDecorator.h"
 #include "../src/TimedSequence/SequencePlayer.h"
-#include "../src/TimedPulse/EventCalbackCustomActions.h"
+#include "../src/TimedPulse/EventCallbackCustomActions.h"
 
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallbackDecorator;
@@ -59,7 +59,7 @@ public:
 class ColorCallback : public TimeIntervalGeneration::EventCallback {
 public:
 	virtual void onPulseStarted(){
-		Color* pC = pColor + getPulseNo();
+		Color* pC = pColor + getItemIndex();
 		RGB_Led::setColor(pC);
 	}	
 	
@@ -83,11 +83,6 @@ int main(void)
 {
 	RGB_Led::init();
 	uartInit();
-	Color c;
-	c.red = 0;
-	c.green = 0;
-	c.blue = 0;
-    /* Replace with your application code */
 	
 	TimeIntervalGenerator::setupTimedPulse();
 	
@@ -144,10 +139,11 @@ int main(void)
 	
 	Callback terminate;
 	sp.setTerminationCallback(&terminate);
-	sp.setupSequence(durs, 3, false);
+	sp.setupSequence(durs, 3, true);
 	
 	CommExecutorFacade facade;
 	facade.initialize();
+	
 	
 	while (1) 
     {		

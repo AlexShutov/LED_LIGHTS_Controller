@@ -55,8 +55,8 @@ void EventCallbackDecorator::onPulseEnded(){
 	if (pActionAfter) pActionAfter->onPulseEnded();
 }
 
-void EventCallbackDecorator::setPulseNo(uint8_t pulseNo){
-	if (pActionBefore) pActionBefore->setPulseNo(pulseNo);
-	if (pDecoree) pDecoree->setPulseNo(pulseNo);
-	if (pActionAfter) pActionAfter->setPulseNo(pulseNo);
+void EventCallbackDecorator::setItemIndex(uint8_t itemIndex){
+	if (pActionBefore) pActionBefore->setItemIndex(itemIndex);
+	if (pDecoree) pDecoree->setItemIndex(itemIndex);
+	if (pActionAfter) pActionAfter->setItemIndex(itemIndex);
 }

@@ -96,7 +96,7 @@ void SequencePlayer::setupSequence(TimeInterval* pItemsDurations,
 	
 	
 	// set pulse number here (before callback is fired)
-	uniformCallback.setPulseNo(0);
+	uniformCallback.setItemIndex(0);
 	pulseGenerator.addPulse(pDurationOfItems, &uniformCallback, pulseIndex, true);
 }
 
@@ -123,7 +123,7 @@ void SequencePlayer::onPulseEnded(){
 	// set pulse index in advance
 	pulseGenerator.stopPulse(pulseIndex, false);
 	
-	uniformCallback.setPulseNo(currItemPosition);
+	uniformCallback.setItemIndex(currItemPosition);
 	pulseGenerator.addPulse(pNextItem, &uniformCallback, pulseIndex, true);
 	
 }
