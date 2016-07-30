@@ -11,7 +11,6 @@
 
 #include "../src/TimedPulse/TimeIntervalGenerator.h"
 #include "../src/TimedPulse/EventCallbackDecorator.h"
-#include "TimeIntervalArrayMapper.h"
 
 extern "C" {
 	#include "../src/TimedPulse/TimeInterval.h"	
@@ -66,10 +65,6 @@ private:
 	// in that case we'll need to copy entire sequence before playing. We'll use
 	// double buffering instead.
 	TimeInterval* pDurationOfItems;
-	// Some command may store TimeInterval values in arbitrary order. This is 
-	// mapper retriving i'th TimeInterval. Set explicitly if you want to use it, because
-	// it is null and ignored by default
-	TimeIntervalArrayMapper* pTimeIntevalsMapper;
 	
 	EventCallbackDecorator uniformCallback;
 	// whether to play sequence in loop mode
@@ -89,7 +84,6 @@ public:
 	void setPulseGeneratorIndex(uint8_t pulseGeneratorIndex);
 	// call during setup if you want all items to be of the same type
 	void setIntervalEndCallback(EventCallback* pItemCallback);
-	void setTimeIntervalMapper(TimeIntervalArrayMapper* pMapper);
 	void setLoopMode(bool isLoopMode);
 	void setTerminationCallback(EventCallback* pTerminationCallback);
 	void stopPlaying();

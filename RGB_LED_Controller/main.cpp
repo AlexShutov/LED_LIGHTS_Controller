@@ -86,6 +86,7 @@ TimeInterval durs[3];
 SequencePlayer sp;
 Callback terminate;
 
+
 void testSequence(){
 	
 	Color* pc = &cols[0];
@@ -113,18 +114,18 @@ void testSequence(){
 	customAction.setCustomAction(&colorCallback[2], 2);
 	
 	TimeInterval* pt = durs;
-	pt->milliseconds = 0;
-	pt->seconds = 1;
+	pt->milliseconds = 100;
+	pt->seconds = 0;
 	pt->minutes = 0;
 	pt++;
 	
-	pt->milliseconds = 0;
-	pt->seconds = 1;
+	pt->milliseconds = 100;
+	pt->seconds = 0;
 	pt->minutes = 0;
 	pt++;
 	
-	pt->milliseconds = 0;
-	pt->seconds = 1;
+	pt->milliseconds = 100;
+	pt->seconds = 0;
 	pt->minutes = 0;
 	
 	sp.setPulseGeneratorIndex(0);

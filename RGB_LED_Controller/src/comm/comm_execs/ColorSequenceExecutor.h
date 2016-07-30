@@ -11,7 +11,6 @@
 
 #include "../src/comm/CommandExecutor.h"
 #include "../src/TimedSequence/SequencePlayer.h"
-#include "../src/TimedSequence/TimeIntervalArrayMapper.h"
 #include "../src/LED_RGB_Driver/RGB_Led.h"
 
 namespace LedCommandExecutors {
@@ -23,29 +22,36 @@ typedef struct {
 	char repeat;
 	char numberOfLights;
 	char isSmoothSwitch;
-}CommandBlinkDataHeader;
+}CommColorHeader;
 
 /** Data for single light */
 typedef struct{
 	Color pulseColor;
 	TimeInterval pulseDuration;
-}CommandBlinkDataRecord;
+}CommColorSequenceRecord;
 #define COMMAND_BLINK_DATA_DATA_HEADER_SIZE sizeof(CommandBlinkDataHeader)
 
 
 /************************************************************************/
 /* Plays sequence of colors   
 /************************************************************************/
-class ColorSequenceExecutor  : public CommandExecutor, 
-	public TimeIntervalArrayMapper
+class ColorSequenceExecutor  : public CommandExecutor
 {
 //variables
 public:
 protected:
+	// Assign pointer to command's header and command's data block.
+	// It is called when executor is being requested to handle command.
+	void assignInternalData(IncomingCommand* pCommand);
 private:
-	
 	/** Points to Sequence player, assigned to this kind of sequence */
 	TimeIntervalGeneration::SequencePlayer* pSequencPlayer;
+	// point to data header in received buffer
+	CommColorHeader* pDataHeader;
+	// points to first data record
+	CommColorSequenceRecord* pDataRecords;
+	// probably should move it to static field inside Color class
+	Color colorOff;
 
 //functions
 public:
