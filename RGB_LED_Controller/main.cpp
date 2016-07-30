@@ -22,6 +22,8 @@ using TimeIntervalGeneration::EventCallbackDecorator;
 using TimeIntervalGeneration::SequencePlayer;
 using TimeIntervalGeneration::EventCallbackCustomActions;
 
+using namespace LedCommandExecutors;
+
 extern "C" {
 	#include "../src/include/uart_stuff.h"
 };
@@ -40,51 +42,13 @@ void f2(uint8_t pulseIndex){
 	RGB_Led::setColor(&c);
 }
 
-class Callback : public TimeIntervalGeneration::EventCallback {
-public:
-	virtual void onPulseStarted(){
-		c.red = 0;
-		c.green = 0;
-		c.blue = 0;
-		RGB_Led::setColor(&c);
-	}
-	
-	virtual void onPulseEnded(){
-		
-	}
-	virtual void setPulseNo(uint8_t pulseNo){}
-	
-};
-
-class ColorCallback : public TimeIntervalGeneration::EventCallback {
-public:
-	virtual void onPulseStarted(){
-		Color* pC = pColor + getItemIndex();
-		RGB_Led::setColor(pC);
-	}	
-	
-	virtual void onPulseEnded(){
-		
-	}
-	
-	void setColor(Color* pC, uint8_t size){
-		pColor = pC;
-		colorArSize = size;
-	}
-	
-private:
-
-	Color* pColor;
-	uint8_t colorArSize;
-
-};
 
 Color cols[3];
 ColorCallback colorCallback;
 EventCallbackCustomActions customAction;
 TimeInterval durs[3];
 SequencePlayer sp;
-Callback terminate;
+SequenceTerminateCallback terminate;
 
 
 void testSequence(){
@@ -131,23 +95,54 @@ void testSequence(){
 	sp.setupSequence(durs, 3, true);
 }
 
+void testSequencePlayer(){
+	ColorSequenceExecutor seqExec;
+	seqExec.setSequencePlayer(&sp);
+	char buff[200];
+	
+	CommColorHeader* pH = (CommColorHeader*) buff;
+	pH->isSmoothSwitch= false;
+	pH->numberOfLights = 2;
+	pH->repeat = true;
+	
+	CommColorSequenceRecord* pRec = (CommColorSequenceRecord*)( pH + 1);
+	pRec->pulseColor.red = 255;
+	pRec->pulseColor.green = 0;
+	pRec->pulseColor.blue = 0;
+	pRec->pulseDuration.milliseconds = 0;
+	pRec->pulseDuration.seconds = 1;
+	pRec->pulseDuration.minutes = 0;
+	pRec++;
+	pRec->pulseColor.red = 0;
+	pRec->pulseColor.green = 0;
+	pRec->pulseColor.blue = 255;
+	pRec->pulseDuration.milliseconds = 0;
+	pRec->pulseDuration.seconds = 1;
+	pRec->pulseDuration.minutes = 0;
+	
+	IncomingCommand command;
+	command.setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
+	command.setDataBlockSize(sizeof(CommColorHeader) + 2 * sizeof(CommColorSequenceRecord));
+	command.setBufferPtr(buff);
+	seqExec.executeCommand(&command);
+}
+
 int main(void)
 {
 	RGB_Led::init();
 	uartInit();
-	
+	sp.setPulseGeneratorIndex(0);
 	TimeIntervalGenerator::setupTimedPulse();
 	
-	testSequence();
+	testSequencePlayer();
 	
-	
-	CommExecutorFacade facade;
-	facade.initialize();
+	//CommExecutorFacade facade;
+	//facade.initialize();
 	
 	
 	while (1) 
     {		
-		facade.pollForCommand();
+	//	facade.pollForCommand();
 		//commandReceiver.receiveCommand();
     }
 }
