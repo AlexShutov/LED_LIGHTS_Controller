@@ -20,6 +20,12 @@ class Color{
 	uint8_t red;
 	uint8_t green;
 	uint8_t blue;
+	
+	static void clear(Color* pC){
+		pC->red = 0;
+		pC->green = 0;
+		pC->blue = 0;
+	}
 };
 	
 class RGB_Led

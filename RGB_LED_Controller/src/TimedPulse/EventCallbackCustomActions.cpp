@@ -27,6 +27,14 @@ void EventCallbackCustomActions::setCustomAction(EventCallback* pAction, uint8_t
 	if (actionIndex >= MAX_CUSTOM_ACTIONS) return;
 	customActions[actionIndex] = pAction;
 }
+void EventCallbackCustomActions::setCustomActionToMany(EventCallback* pAction, 
+	uint8_t actionsSize)
+{
+	for (uint8_t i = 0; i < actionsSize; ++i){
+		setCustomAction(pAction, i);
+		// each action is responsible for one pulse (under its number)
+	}	
+}
 
 EventCallback* EventCallbackCustomActions::getCustomAction(uint8_t actionIndex){
 	return (actionIndex >= MAX_CUSTOM_ACTIONS) ? 0 : customActions[actionIndex];

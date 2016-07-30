@@ -10,12 +10,71 @@
 
 using namespace LedCommandExecutors;
 
+/************************************************************************/
+/*		 Methods of SequenceTerminateCallback                           */
+/************************************************************************/
+
+void SequenceTerminateCallback::onPulseStarted(){
+	Color::clear(&c);
+	RGB_Led::setColor(&c);
+}
+
+void SequenceTerminateCallback::onPulseEnded()
+{
+}
+
+void SequenceTerminateCallback::setPulseNo(uint8_t pulseNo)
+{
+}
+
+/************************************************************************/
+/*		  Methods of ColorCallback                                      */
+/************************************************************************/
+
+void ColorCallback::onPulseStarted(){
+	// get pointer to current color
+	Color* pC = pColor + getItemIndex();
+	if (!isSmoothSwitching){
+		RGB_Led::setColor(pC);
+	} else {
+		RGB_Led::shiftToColor(pC);
+	}
+}
+
+void ColorCallback::onPulseEnded()
+{
+}
+
+void ColorCallback::setIsSmoothSwitching(bool isSmooth){
+	isSmoothSwitching = isSmooth;
+}
+
+void ColorCallback::setColor(Color* pC, uint8_t size){
+	pColor = pC;
+	colorArSize = size;
+}
+
+
+
+/************************************************************************/
+/*       Methods of ColorSequenceExecutor
+/************************************************************************/
+
 // default constructor
 ColorSequenceExecutor::ColorSequenceExecutor()
 {
-	colorOff.red = 0;
-	colorOff.green = 0;
-	colorOff.blue = 0;
+	Color::clear(&colorOff);
+	for (uint8_t i = 0; i < MAX_SEQUENCE_LENGTH; ++i){
+		TimeInterval* pT = intervalDurations + i;
+		pT->milliseconds = 0;
+		pT->seconds = 0;
+		pT->minutes = 0;
+		Color::clear(intervalColors + i);
+	}
+	// bind ColorCallback to color data once
+	colorCallback.setColor(intervalColors, MAX_SEQUENCE_LENGTH);
+	colorCallback.setIsSmoothSwitching(false);
+	compositeCallback.setCustomActionToMany(&colorCallback, MAX_SEQUENCE_LENGTH);
 } //LightSequenceExecutor
 
 // default destructor
@@ -45,7 +104,8 @@ bool ColorSequenceExecutor::executeCommand(IncomingCommand* pCommand){
 	// this is mandatory - see comment above
 	pSequencPlayer->stopPlaying();
 	// Use this executor as TimeInterval mapper
-	assignInternalData(pCommand);
+	loadData(pCommand);
+	setupPlayerAndCallbacks();
 }
 /* Stop playing current sequence and turn off RGB LED */
 bool ColorSequenceExecutor::revertCommand(IncomingCommand* pCommand){
@@ -53,9 +113,33 @@ bool ColorSequenceExecutor::revertCommand(IncomingCommand* pCommand){
 	RGB_Led::setColor(&colorOff);
 }
 
-void ColorSequenceExecutor::assignInternalData(IncomingCommand* pCommand){
+void ColorSequenceExecutor::loadData(IncomingCommand* pCommand){
 	char* pBuffer = pCommand->getBufferPtr();
 	pDataHeader = (CommColorHeader*) pBuffer;
+	bool isLooping = pDataHeader->repeat;
 	// section with color data comes right after command data header
 	pDataRecords = (CommColorSequenceRecord*) ( pDataHeader + 1);
+	for (uint8_t i = 0; i < pDataHeader->numberOfLights; ++i){
+		CommColorSequenceRecord* pCurrRec = pDataRecords + i;
+		// point to current time interval
+		TimeInterval* pT = intervalDurations + i;
+		// copy it
+		*pT = pCurrRec->pulseDuration;
+		// copy color data
+		Color* pC = intervalColors + i;
+		*pC = pCurrRec->pulseColor;
+	}
+	
+}
+
+void ColorSequenceExecutor::setupPlayerAndCallbacks()
+{
+	colorCallback.setIsSmoothSwitching(pDataHeader->isSmoothSwitch);
+	pSequencPlayer->init();
+	pSequencPlayer->setLoopMode(pDataHeader->repeat);
+	// set interval and end callbacks, specific to this command type
+	pSequencPlayer->setIntervalEndCallback(&compositeCallback);
+	pSequencPlayer->setTerminationCallback(&terminateCallback);
+	pSequencPlayer->setupSequence(intervalDurations, pDataHeader->numberOfLights,
+		pDataHeader->repeat);
 }

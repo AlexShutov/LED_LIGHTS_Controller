@@ -80,7 +80,7 @@ private:
 };
 
 Color cols[3];
-ColorCallback colorCallback[3];
+ColorCallback colorCallback;
 EventCallbackCustomActions customAction;
 TimeInterval durs[3];
 SequencePlayer sp;
@@ -104,15 +104,11 @@ void testSequence(){
 	pc->green = 0;
 	pc->blue = 255;
 	
-	colorCallback[0].setColor(cols, 3);
-	colorCallback[1].setColor(cols, 3);
-	colorCallback[2].setColor(cols, 3);
+	colorCallback.setColor(cols, 3);
 	
 	//customAction.setCustomActions(colorCallback, 3);
-	customAction.setCustomAction(&colorCallback[0], 0);
-	customAction.setCustomAction(&colorCallback[1], 1);
-	customAction.setCustomAction(&colorCallback[2], 2);
-	
+	customAction.setCustomActionToMany(&colorCallback, MAX_CUSTOM_ACTIONS);
+	//customAction.setCustomActions(&colorCallback, MAX_CUSTOM_ACTIONS);
 	TimeInterval* pt = durs;
 	pt->milliseconds = 100;
 	pt->seconds = 0;

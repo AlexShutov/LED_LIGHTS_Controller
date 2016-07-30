@@ -29,10 +29,12 @@ private:
 public:
 
 	void setCustomAction(EventCallback* pAction, uint8_t actionIndex);
+	// set the same action to many items [0.. actionIndex]
+	void setCustomActionToMany(EventCallback* pAction, uint8_t actionSize);
 	EventCallback* getCustomAction(uint8_t actionIndex);
 
 	void setCustomActions(EventCallback* pActions, uint8_t actionsSize);
-
+	
 	virtual void onPulseStarted();
 	virtual void onPulseEnded();
 	

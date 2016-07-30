@@ -11,11 +11,13 @@
 
 #include "../src/comm/CommandExecutor.h"
 #include "../src/TimedSequence/SequencePlayer.h"
+#include "../src/TimedPulse/EventCallbackCustomActions.h"
 #include "../src/LED_RGB_Driver/RGB_Led.h"
 
 namespace LedCommandExecutors {
 	
 #define COMMAND_CODE_LIGHT_SEQUENCE 1
+
 
 /** Header of command, preceding data block */
 typedef struct {
@@ -32,6 +34,31 @@ typedef struct{
 #define COMMAND_BLINK_DATA_DATA_HEADER_SIZE sizeof(CommandBlinkDataHeader)
 
 
+class SequenceTerminateCallback : public TimeIntervalGeneration::EventCallback {
+private:
+	Color c;
+	public:
+	virtual void onPulseStarted();
+	virtual void onPulseEnded();
+	virtual void setPulseNo(uint8_t pulseNo);
+	
+};
+
+class ColorCallback : public TimeIntervalGeneration::EventCallback {
+	public:
+	virtual void onPulseStarted();
+	virtual void onPulseEnded();
+	void setIsSmoothSwitching(bool isSmooth);
+	void setColor(Color* pC, uint8_t size);
+	
+	
+private:
+	bool isSmoothSwitching;
+	Color* pColor;
+	uint8_t colorArSize;
+
+};
+
 /************************************************************************/
 /* Plays sequence of colors   
 /************************************************************************/
@@ -42,7 +69,8 @@ public:
 protected:
 	// Assign pointer to command's header and command's data block.
 	// It is called when executor is being requested to handle command.
-	void assignInternalData(IncomingCommand* pCommand);
+	void loadData(IncomingCommand* pCommand);
+	void setupPlayerAndCallbacks();
 private:
 	/** Points to Sequence player, assigned to this kind of sequence */
 	TimeIntervalGeneration::SequencePlayer* pSequencPlayer;
@@ -52,7 +80,19 @@ private:
 	CommColorSequenceRecord* pDataRecords;
 	// probably should move it to static field inside Color class
 	Color colorOff;
-
+	
+	Color intervalColors[MAX_SEQUENCE_LENGTH];
+	TimeInterval intervalDurations[MAX_SEQUENCE_LENGTH];
+	
+	// this callback transform single callback into array of custom
+	// callbacks, in which each item is responsible for its own interval
+	TimeIntervalGeneration::EventCallbackCustomActions compositeCallback;
+	
+	// callback which is called when sequence have ended
+	SequenceTerminateCallback terminateCallback;
+	
+	ColorCallback colorCallback;
+	
 //functions
 public:
 	ColorSequenceExecutor();
@@ -61,7 +101,7 @@ public:
 	virtual bool executeCommand(IncomingCommand* pCommand);
 	virtual bool revertCommand(IncomingCommand* pCommand);
 	
-	/** pull TimeInterval for i'th light from general command buffer */
+	/** pull TimeInterval for i light from general command buffer */
 	virtual TimeInterval* getTimeInterval(uint8_t index);
 	/* Assign SequencePlayer to this command */
 	void setSequencePlayer(TimeIntervalGeneration::SequencePlayer* pPlayer);
