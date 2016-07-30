@@ -79,19 +79,14 @@ private:
 
 };
 
-int main(void)
-{
-	RGB_Led::init();
-	uartInit();
-	
-	TimeIntervalGenerator::setupTimedPulse();
-	
-	TimeInterval ti;
-	ti.milliseconds = 0;	
-	ti.seconds = 0;
-	ti.minutes = 1;
-	
-	Color cols[3];
+Color cols[3];
+ColorCallback colorCallback[3];
+EventCallbackCustomActions customAction;
+TimeInterval durs[3];
+SequencePlayer sp(0);
+Callback terminate;
+
+void testSequence(){
 	
 	Color* pc = &cols[0];
 	pc->red = 255;
@@ -107,18 +102,16 @@ int main(void)
 	pc->red = 0;
 	pc->green = 0;
 	pc->blue = 255;
-	ColorCallback colorCallback[3];
+	
 	colorCallback[0].setColor(cols, 3);
 	colorCallback[1].setColor(cols, 3);
 	colorCallback[2].setColor(cols, 3);
 	
-	EventCallbackCustomActions customAction;
 	//customAction.setCustomActions(colorCallback, 3);
 	customAction.setCustomAction(&colorCallback[0], 0);
 	customAction.setCustomAction(&colorCallback[1], 1);
 	customAction.setCustomAction(&colorCallback[2], 2);
 	
-	TimeInterval durs[3];
 	TimeInterval* pt = durs;
 	pt->milliseconds = 0;
 	pt->seconds = 1;
@@ -134,12 +127,21 @@ int main(void)
 	pt->seconds = 1;
 	pt->minutes = 0;
 	
-	SequencePlayer sp(0);
-	sp.setIntervalEndCallback(&customAction);
 	
-	Callback terminate;
+	sp.setIntervalEndCallback(&customAction);
 	sp.setTerminationCallback(&terminate);
 	sp.setupSequence(durs, 3, true);
+}
+
+int main(void)
+{
+	RGB_Led::init();
+	uartInit();
+	
+	TimeIntervalGenerator::setupTimedPulse();
+	
+	// testSequence();
+	
 	
 	CommExecutorFacade facade;
 	facade.initialize();
@@ -147,7 +149,7 @@ int main(void)
 	
 	while (1) 
     {		
-		//facade.pollForCommand();
+		facade.pollForCommand();
 		//commandReceiver.receiveCommand();
     }
 }

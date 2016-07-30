@@ -33,6 +33,7 @@ private:
 	CommandReceiver commandReceiver;
 	CompositeChainExecutor execChain;
 	
+	/** Executors responsible for LED commands */
 	LedCommandExecutors::ExecChangeColor commChangeColor;
 	LedCommandExecutors::LightSequenceExecutor commLightSequence;
 
@@ -48,6 +49,7 @@ private:
 	CommExecutorFacade( const CommExecutorFacade &c );
 	CommExecutorFacade& operator=( const CommExecutorFacade &c );
 	
+	void setupLEDExecutors();
 
 }; //CommExecutorFacade
 
