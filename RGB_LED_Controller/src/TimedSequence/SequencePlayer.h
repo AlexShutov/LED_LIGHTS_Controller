@@ -74,10 +74,14 @@ private:
 	
 //functions
 public:
-	// pulse index should not be changed
-	SequencePlayer(uint8_t pulseGeneratorIndex);
+	SequencePlayer();
 	~SequencePlayer();
-	
+	/* workflow is following - set pulseGeneratorIndex by 'setPulseGeneratorIndex'
+	 and call 'init()' after it 
+	 */
+	void init();
+	/* what TimedPulse should be used for this sequence */
+	void setPulseGeneratorIndex(uint8_t pulseGeneratorIndex);
 	// call during setup if you want all items to be of the same type
 	void setIntervalEndCallback(EventCallback* pItemCallback);
 	void setLoopMode(bool isLoopMode);
@@ -94,7 +98,7 @@ protected:
 	virtual void setPulseNo(uint8_t pulseNo);
 	
 private:
-	void init();
+	
 	// set decorators for intercepting item callbacks
 	
 	SequencePlayer( const SequencePlayer &c );

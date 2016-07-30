@@ -83,7 +83,7 @@ Color cols[3];
 ColorCallback colorCallback[3];
 EventCallbackCustomActions customAction;
 TimeInterval durs[3];
-SequencePlayer sp(0);
+SequencePlayer sp;
 Callback terminate;
 
 void testSequence(){
@@ -127,7 +127,8 @@ void testSequence(){
 	pt->seconds = 1;
 	pt->minutes = 0;
 	
-	
+	sp.setPulseGeneratorIndex(0);
+	sp.init();
 	sp.setIntervalEndCallback(&customAction);
 	sp.setTerminationCallback(&terminate);
 	sp.setupSequence(durs, 3, true);

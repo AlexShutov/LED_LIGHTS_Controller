@@ -16,6 +16,7 @@
 #include "../src/comm/comm_execs/CompositeChainExecutor.h"
 #include "../src/comm/comm_execs/ExecChangeColor.h"
 #include "../src/comm/comm_execs/LightSequenceExecutor.h"
+#include "../src/TimedSequence/SequencePlayer.h"
 
 
 /************************************************************************/
@@ -32,6 +33,8 @@ private:
 	UartSource uart;
 	CommandReceiver commandReceiver;
 	CompositeChainExecutor execChain;
+	
+	
 	
 	/** Executors responsible for LED commands */
 	LedCommandExecutors::ExecChangeColor commChangeColor;

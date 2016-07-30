@@ -40,17 +40,18 @@ EventCallback* SequenceItem::getAction(){
 /************************************************************************/
 
 // default constructor
-SequencePlayer::SequencePlayer(uint8_t pulseGeneratorIndex)
+SequencePlayer::SequencePlayer()
 {
-	pulseIndex = pulseGeneratorIndex;
-	init();
-} //SequencePlayer
+}
 
 // default destructor
 SequencePlayer::~SequencePlayer()
 {
 } //~SequencePlayer
 
+void SequencePlayer::setPulseGeneratorIndex(uint8_t pulseGeneratorIndex){
+	pulseIndex = pulseGeneratorIndex;
+}
 void SequencePlayer::init(){
 	currItemPosition = 0;
 	totalItemCount = 0;
