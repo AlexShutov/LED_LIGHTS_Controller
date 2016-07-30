@@ -56,6 +56,8 @@ void SequencePlayer::init(){
 	currItemPosition = 0;
 	totalItemCount = 0;
 	isLooping = false;
+	// Ignore TimeInterval mapper by default
+	pTimeIntevalsMapper = 0;
 	// clear this callback on startup, or it won't work otherwise
 	pTerminationCallback = 0;
 }
@@ -69,6 +71,10 @@ void SequencePlayer::setIntervalEndCallback(EventCallback* pItemCallback){
 	uniformCallback.setActionAfter(this);
 	/* Player only handles transition to next item, here is no need in 'actionAfter' */
 	uniformCallback.setActionBefore(0);
+}
+
+void SequencePlayer::setTimeIntervalMapper(TimeIntervalArrayMapper* pMapper){
+	pTimeIntevalsMapper = pMapper;
 }
 
 void SequencePlayer::setLoopMode(bool isLoopMode){
@@ -120,7 +126,13 @@ void SequencePlayer::onPulseEnded(){
 			return;
 		}
 	}
-	TimeInterval* pNextItem = &pDurationOfItems[currItemPosition];
+	TimeInterval* pNextItem = 0;
+	// Use mapper if set
+	if (pTimeIntevalsMapper){
+		pNextItem = pTimeIntevalsMapper->getTimeInterval(currItemPosition);
+	} else {
+		pNextItem = &pDurationOfItems[currItemPosition];
+	}
 	// set pulse index in advance
 	pulseGenerator.stopPulse(pulseIndex, false);
 	

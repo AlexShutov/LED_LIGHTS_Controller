@@ -15,8 +15,9 @@
 #include "../src/comm/CommandReceiver.h"
 #include "../src/comm/comm_execs/CompositeChainExecutor.h"
 #include "../src/comm/comm_execs/ExecChangeColor.h"
-#include "../src/comm/comm_execs/LightSequenceExecutor.h"
+#include "../src/comm/comm_execs/ColorSequenceExecutor.h"
 #include "../src/TimedSequence/SequencePlayer.h"
+
 
 
 /************************************************************************/
@@ -34,11 +35,18 @@ private:
 	CommandReceiver commandReceiver;
 	CompositeChainExecutor execChain;
 	
-	
+	// responsible for rgb lights (there is stobes also)
+	TimeIntervalGeneration::SequencePlayer ledLightsSequencePlayer;
 	
 	/** Executors responsible for LED commands */
+	
+	// COMMAND_CODE_CHANGE_COLOR
 	LedCommandExecutors::ExecChangeColor commChangeColor;
-	LedCommandExecutors::LightSequenceExecutor commLightSequence;
+	
+	// COMMAND_CODE_LIGHT_SEQUENCE
+	LedCommandExecutors::ColorSequenceExecutor commLightSequence;
+	
+	
 
 //functions
 public:

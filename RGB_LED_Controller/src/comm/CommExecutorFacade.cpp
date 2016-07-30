@@ -29,6 +29,11 @@ void CommExecutorFacade::initialize(){
 	// change data source, we can pass command receiver and uart data source to that
 	// executor (for example, restoring and savong currrent command to eeprom)
 	commandReceiver.setSourceOfData(&uart);
+	
+	// TimedPulse under index 0 generates timing pulses for RGB LED sequence 
+	ledLightsSequencePlayer.setPulseGeneratorIndex(0);
+	ledLightsSequencePlayer.init();
+	
 	/* initialize command processors for LED related commands */
 	setupLEDExecutors();
 	

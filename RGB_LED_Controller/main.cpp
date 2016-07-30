@@ -141,7 +141,7 @@ int main(void)
 	
 	TimeIntervalGenerator::setupTimedPulse();
 	
-	// testSequence();
+	testSequence();
 	
 	
 	CommExecutorFacade facade;
