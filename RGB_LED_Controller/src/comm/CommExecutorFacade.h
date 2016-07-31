@@ -41,10 +41,12 @@ private:
 	/** Executors responsible for LED commands */
 	
 	// COMMAND_CODE_CHANGE_COLOR
-	LedCommandExecutors::ExecChangeColor commChangeColor;
+	LedCommandExecutors::ExecChangeColor execChangeColor;
+	
+	LedCommandExecutors::ExecChangeColor execChangeColor2;
 	
 	// COMMAND_CODE_LIGHT_SEQUENCE
-	LedCommandExecutors::ColorSequenceExecutor commLightSequence;
+	LedCommandExecutors::ColorSequenceExecutor execLightSequence;
 	
 	
 
