@@ -16,7 +16,7 @@
 #include "../src/comm/comm_execs/CompositeChainExecutor.h"
 #include "../src/comm/comm_execs/ExecChangeColor.h"
 #include "../src/comm/comm_execs/ColorSequenceExecutor.h"
-#include "../src/TimedSequence/SequencePlayer.h"
+#include "../src/timed_sequence/SequencePlayer.h"
 
 
 

@@ -9,13 +9,13 @@
 #include <avr/io.h>
 #include "compiler.h"
 #include "../src/Utils/operators.h"
-#include "LED_RGB_Driver/RGB_Led.h"
+#include "hardware_drivers/RGB_Led.h"
 
 #include "../src/comm/CommExecutorFacade.h"
-#include "../src/TimedPulse/TimeIntervalGenerator.h"
-#include "../src/TimedPulse/EventCallbackDecorator.h"
-#include "../src/TimedSequence/SequencePlayer.h"
-#include "../src/TimedPulse/EventCallbackCustomActions.h"
+#include "../src/timed_pulse/TimeIntervalGenerator.h"
+#include "../src/timed_pulse/EventCallbackDecorator.h"
+#include "../src/timed_sequence/SequencePlayer.h"
+#include "../src/timed_pulse/EventCallbackCustomActions.h"
 
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallbackDecorator;

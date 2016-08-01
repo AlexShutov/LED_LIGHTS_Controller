@@ -10,9 +10,9 @@
 #define __LIGHTSEQUENCEEXECUTOR_H__
 
 #include "../src/comm/CommandExecutor.h"
-#include "../src/TimedSequence/SequencePlayer.h"
-#include "../src/TimedPulse/EventCallbackCustomActions.h"
-#include "../src/LED_RGB_Driver/RGB_Led.h"
+#include "../src/timed_sequence/SequencePlayer.h"
+#include "../src/timed_pulse/EventCallbackCustomActions.h"
+#include "../src/hardware_drivers/RGB_Led.h"
 
 namespace LedCommandExecutors {
 	

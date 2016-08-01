@@ -9,11 +9,11 @@
 #ifndef __SEQUENCEPLAYER_H__
 #define __SEQUENCEPLAYER_H__
 
-#include "../src/TimedPulse/TimeIntervalGenerator.h"
-#include "../src/TimedPulse/EventCallbackDecorator.h"
+#include "../src/timed_pulse/TimeIntervalGenerator.h"
+#include "../src/timed_pulse/EventCallbackDecorator.h"
 
 extern "C" {
-	#include "../src/TimedPulse/TimeInterval.h"	
+	#include "../src/timed_pulse/TimeInterval.h"	
 };
 
 

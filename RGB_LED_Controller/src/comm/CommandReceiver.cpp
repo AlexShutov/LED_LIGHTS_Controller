@@ -7,7 +7,7 @@
 
 
 #include "CommandReceiver.h"
-#include "../src/LED_RGB_Driver/RGB_Led.h"
+#include "../src/hardware_drivers/RGB_Led.h"
 #include "../src/include/uart_stuff.h"
 
 // default constructor

@@ -7,10 +7,10 @@
 
 
 #include "SequencePlayer.h"
-#include "../src/TimedPulse/TimeInterval.h"
-#include "../src/TimedPulse/TimeInterval.h"
+#include "../src/timed_pulse/TimeInterval.h"
+#include "../src/timed_pulse/TimeInterval.h"
 
-#include "../src/LED_RGB_Driver/RGB_Led.h"
+#include "../src/hardware_drivers/RGB_Led.h"
 
 using namespace TimeIntervalGeneration;
 

@@ -6,7 +6,7 @@
 */
 
 extern "C" {
-	#include "LED_RGB_Driver/RGB_LED_Driver.h"
+	#include "hardware_drivers/RGB_LED_Driver.h"
 	};
 
 #include "RGB_Led.h"

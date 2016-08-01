@@ -8,8 +8,8 @@
 
 #include "TimeIntervalGenerator.h"
 extern "C" {
-	#include "../src/TimedPulse/TimedPulse.h"
-	#include "../src/TimedPulse/TimeInterval.h"
+	#include "../src/timed_pulse/TimedPulse.h"
+	#include "../src/timed_pulse/TimeInterval.h"
 };
 
 
