@@ -31,16 +31,16 @@ typedef struct {
 } LEDColor;
 
 
-static volatile uint8_t* const LED_PORT_DIRECT = &DDRB;
-static volatile uint8_t* const LED_PORT = &PORTB;
+static volatile uint8_t* const LED_PORT_DIRECT = LED_REGISTER_DIRECT;
+static volatile uint8_t* const LED_PORT = LED_REGISTER;
 /*
 static uint8_t const LED_PIN_CHANNEL_RED =  1;
 static uint8_t const LED_PIN_CHANNEL_GREEN = 3;
 static uint8_t const LED_PIN_CHANNEL_BLUE = 2;
 */
-static uint8_t const LED_PIN_CHANNEL_RED =  2;
-static uint8_t const LED_PIN_CHANNEL_GREEN = 4;
-static uint8_t const LED_PIN_CHANNEL_BLUE = 3;
+static uint8_t const LED_PIN_CHANNEL_RED =  LED_PIN_RED;
+static uint8_t const LED_PIN_CHANNEL_GREEN = LED_PIN_GREEN;
+static uint8_t const LED_PIN_CHANNEL_BLUE = LED_PIN_BLUE;
 
 void delay(void);
 void initRgbLedDriver(void);

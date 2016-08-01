@@ -41,6 +41,19 @@
  */
 #define UART_BAUD_RATE 57600
 
+// define register and pins to which RGB Led is connected to
+#define LED_REGISTER_DIRECT  &DDRB
+#define LED_REGISTER &PORTB
+#define LED_PIN_RED 2
+#define LED_PIN_GREEN 4
+#define LED_PIN_BLUE 3
+
+// define port and pin which strobe is connected to
+#define FLASH_CHANNEL_DIRECTION_PORT DDRB
+#define FLASH_CHANNEL_PORT PORTB
+#define FLASH_CHANNEL_PIN_NO 5
+//#define FLASH_CHANNEL_LOW_STATE_IS_ENABLED
+
 
 /** Enable interrupt driven mode
  *
@@ -48,12 +61,6 @@
  * two pins for the UART then received data will be read and buffered as it
  * arrives.
  */
-
-#define FLASH_CHANNEL_DIRECTION_PORT DDRB
-#define FLASH_CHANNEL_PORT PORTB
-#define FLASH_CHANNEL_PIN_NO 5
-//#define FLASH_CHANNEL_LOW_STATE_IS_ENABLED
-
 #define UART_INTERRUPT
 
 /** Size of input buffer
