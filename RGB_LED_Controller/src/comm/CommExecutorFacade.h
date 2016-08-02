@@ -10,12 +10,15 @@
 #define __COMMEXECUTORFACADE_H__
 
 #include <avr/io.h>
+#include "../src/hardware.h"
+#include "../src/hardware_drivers/Strobe.h"
 #include "../src/comm/SourceOfData.h"
 #include "../src/comm/comm_sources/UartSource.h"
 #include "../src/comm/CommandReceiver.h"
 #include "../src/comm/comm_execs/CompositeChainExecutor.h"
 #include "../src/comm/comm_execs/ExecChangeColor.h"
 #include "../src/comm/comm_execs/ColorSequenceExecutor.h"
+#include "../src/comm/comm_execs/StrobeLightsExecutor.h"
 #include "../src/timed_sequence/SequencePlayer.h"
 
 
@@ -32,22 +35,25 @@ protected:
 private:
 
 	UartSource uart;
+	Strobe strobeChannel;
 	CommandReceiver commandReceiver;
 	CompositeChainExecutor execChain;
 	
-	// responsible for rgb lights (there is stobes also)
+	// responsible for rgb lights (there is strobes also)
 	TimeIntervalGeneration::SequencePlayer ledLightsSequencePlayer;
+	// plays strobe sequence
+	TimeIntervalGeneration::SequencePlayer strobePlayer;
 	
 	/** Executors responsible for LED commands */
 	
 	// COMMAND_CODE_CHANGE_COLOR
 	LedCommandExecutors::ExecChangeColor execChangeColor;
 	
-	LedCommandExecutors::ExecChangeColor execChangeColor2;
-	
 	// COMMAND_CODE_LIGHT_SEQUENCE
 	LedCommandExecutors::ColorSequenceExecutor execLightSequence;
 	
+	// COMMAND_STROBE_SEQUENCE
+	StrobeRelated::StrobeLightsExecutor strobeLightsExec;
 	
 
 //functions
@@ -57,12 +63,16 @@ public:
 	void pollForCommand();
 	void initialize();
 	
+	Strobe* getStrobe();
+	
 protected:
 private:
 	CommExecutorFacade( const CommExecutorFacade &c );
 	CommExecutorFacade& operator=( const CommExecutorFacade &c );
-	
+	/* Initialize strobe channel */
+	void initStrobeChannel();
 	void setupLEDExecutors();
+	
 
 }; //CommExecutorFacade
 

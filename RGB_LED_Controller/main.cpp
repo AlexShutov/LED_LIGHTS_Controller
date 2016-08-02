@@ -8,14 +8,17 @@
 #include <avr/delay.h>
 #include <avr/io.h>
 #include "compiler.h"
+#include "hardware.h"
 #include "../src/Utils/operators.h"
 #include "hardware_drivers/RGB_Led.h"
+#include "hardware_drivers/Strobe.h"
 
 #include "../src/comm/CommExecutorFacade.h"
 #include "../src/timed_pulse/TimeIntervalGenerator.h"
 #include "../src/timed_pulse/EventCallbackDecorator.h"
 #include "../src/timed_sequence/SequencePlayer.h"
 #include "../src/timed_pulse/EventCallbackCustomActions.h"
+#include "../src/comm/comm_execs/StrobeLightsExecutor.h"
 
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallbackDecorator;
@@ -23,6 +26,7 @@ using TimeIntervalGeneration::SequencePlayer;
 using TimeIntervalGeneration::EventCallbackCustomActions;
 
 using namespace LedCommandExecutors;
+using namespace StrobeRelated;
 
 extern "C" {
 	#include "../src/include/uart_stuff.h"
@@ -117,6 +121,7 @@ void assert(char val, char needed){
 }
 
 ColorSequenceExecutor seqExec;
+StrobeLightsExecutor strobeExec;
 char buff[200];
 void testSequencePlayer(){
 	
@@ -158,6 +163,46 @@ void testSequencePlayer(){
 	
 }
 
+
+void testStrobe(Strobe* pStrobe, SequencePlayer* pPlayer){
+	strobeExec.setSequencePlayer(pPlayer);
+	strobeExec.setStrobe(pStrobe);
+	
+	CommandStrobesDataHeader* pStrobeHeader = (CommandStrobesDataHeader*) buff;
+	pStrobeHeader->isItPermanent = true;
+	pStrobeHeader->isON = true;
+	pStrobeHeader->numberOfFlashes = 2;
+	pStrobeHeader->repeat = true;
+	
+	CommandStrobesDataRecord* pRec = (CommandStrobesDataRecord*)( pStrobeHeader + 1);
+	TimeInterval* pT = &pRec->flashDuration;
+	
+	pT->milliseconds = 100;
+	pT->seconds = 0;
+	pT->minutes = 0;
+	pT = &pRec->pauseDuration;
+	pT->milliseconds = 0;
+	pT->seconds = 1;
+	pT->minutes = 0;
+	pRec++;
+	
+	pT = &pRec->flashDuration;
+	pT->milliseconds = 0;
+	pT->seconds = 1;
+	pT->minutes = 0;
+	pT = &pRec->pauseDuration;
+	pT->milliseconds = 0;
+	pT->seconds = 1;
+	pT->minutes = 0;
+	
+	IncomingCommand command;
+	command.setCommandCode(COMMAND_STROBE_SEQUENCE);
+	command.setDataBlockSize(sizeof(CommandStrobesDataHeader) + 
+		2 * sizeof(CommandStrobesDataRecord));
+	command.setBufferPtr(buff);
+	strobeExec.executeCommand(&command);
+}
+
 int main(void)
 {
 	RGB_Led::init();
@@ -169,7 +214,9 @@ int main(void)
 	
 	CommExecutorFacade facade;
 	facade.initialize();
+	facade.getStrobe()->turnOff();
 	
+	testStrobe(facade.getStrobe(), &sp);
 	
 	while (1) 
     {		

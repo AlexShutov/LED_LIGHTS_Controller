@@ -45,7 +45,7 @@ private:
 };
 
 class ColorCallback : public TimeIntervalGeneration::EventCallback {
-	public:
+public:
 	virtual void onPulseStarted();
 	virtual void onPulseEnded();
 	void setIsSmoothSwitching(bool isSmooth);
@@ -75,7 +75,7 @@ private:
 	/** Points to Sequence player, assigned to this kind of sequence */
 	TimeIntervalGeneration::SequencePlayer* pSequencPlayer;
 	// point to data header in received buffer
-	CommColorHeader* pDataHeader;
+	CommColorHeader dataHeader;
 	// points to first data record
 	CommColorSequenceRecord* pDataRecords;
 	// probably should move it to static field inside Color class

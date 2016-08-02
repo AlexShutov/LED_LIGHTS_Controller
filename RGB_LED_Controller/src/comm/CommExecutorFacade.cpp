@@ -8,6 +8,7 @@
 
 #include "CommExecutorFacade.h"
 
+
 // default constructor
 CommExecutorFacade::CommExecutorFacade()
 {
@@ -23,6 +24,8 @@ void CommExecutorFacade::pollForCommand(){
 }
 
 void CommExecutorFacade::initialize(){
+	// initialize strobe channel
+	initStrobeChannel();
 	// bind command receiver to chain of commands
 	commandReceiver.setCommandExecutor(&execChain);
 	// connect command receiver to uart. if some command executor need to 
@@ -34,13 +37,35 @@ void CommExecutorFacade::initialize(){
 	ledLightsSequencePlayer.setPulseGeneratorIndex(0);
 	ledLightsSequencePlayer.init();
 	
-	/* initialize command processors for LED related commands */
-	setupLEDExecutors();
+	// TimedPulse with index 1 - handles strobe flashes
+	strobePlayer.setPulseGeneratorIndex(1);
+	strobePlayer.init();
 	
+	/* initialize command processors for LED related commands */
+	setupLEDExecutors();	
 }
 
-void CommExecutorFacade::setupLEDExecutors(){
-	
+Strobe* CommExecutorFacade::getStrobe()
+{
+	return &strobeChannel;
+}
+
+void CommExecutorFacade::initStrobeChannel()
+{
+	bool strobe_low_state_en = true;
+	#ifdef FLASH_CHANNEL_LOW_STATE_IS_ENABLED
+		strobe_low_state_en = true;
+	#else
+		strobe_low_state_en = false;
+	#endif
+	strobeChannel.initStrobe(FLASH_CHANNEL_DIRECTION_PORT,
+							 FLASH_CHANNEL_PORT,
+							 FLASH_CHANNEL_PIN_NO,
+							 !strobe_low_state_en);
+}
+
+void CommExecutorFacade::setupLEDExecutors()
+{	
 	execLightSequence.setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
 	execLightSequence.setSequencePlayer(&ledLightsSequencePlayer);
 	execChain.addExecutor(&execLightSequence);
@@ -48,5 +73,8 @@ void CommExecutorFacade::setupLEDExecutors(){
 	execChangeColor.setCommandCode(COMMAND_CODE_CHANGE_COLOR);
 	execChain.addExecutor(&execChangeColor);
 	
+	strobeLightsExec.setCommandCode(COMMAND_STROBE_SEQUENCE);
+	strobeLightsExec.setSequencePlayer(&strobePlayer);
+	execChain.addExecutor(&strobeLightsExec);
 	
 }

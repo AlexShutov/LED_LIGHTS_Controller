@@ -115,8 +115,9 @@ bool ColorSequenceExecutor::revertCommand(IncomingCommand* pCommand){
 
 void ColorSequenceExecutor::loadData(IncomingCommand* pCommand){
 	char* pBuffer = pCommand->getBufferPtr();
-	pDataHeader = (CommColorHeader*) pBuffer;
-	bool isLooping = pDataHeader->repeat;
+	CommColorHeader* pDataHeader = (CommColorHeader*) pBuffer;
+	dataHeader = * pDataHeader;
+	bool isLooping = dataHeader.repeat;
 	// section with color data comes right after command data header
 	pDataRecords = (CommColorSequenceRecord*) ( pDataHeader + 1);
 	for (uint8_t i = 0; i < pDataHeader->numberOfLights; ++i){
@@ -129,17 +130,16 @@ void ColorSequenceExecutor::loadData(IncomingCommand* pCommand){
 		Color* pC = intervalColors + i;
 		*pC = pCurrRec->pulseColor;
 	}
-	
 }
 
 void ColorSequenceExecutor::setupPlayerAndCallbacks()
 {
-	colorCallback.setIsSmoothSwitching(pDataHeader->isSmoothSwitch);
+	colorCallback.setIsSmoothSwitching(dataHeader.isSmoothSwitch);
 	pSequencPlayer->init();
-	pSequencPlayer->setLoopMode(pDataHeader->repeat);
+	pSequencPlayer->setLoopMode(dataHeader.repeat);
 	// set interval and end callbacks, specific to this command type
 	pSequencPlayer->setIntervalEndCallback(&compositeCallback);
 	pSequencPlayer->setTerminationCallback(&terminateCallback);
-	pSequencPlayer->setupSequence(intervalDurations, pDataHeader->numberOfLights,
-		pDataHeader->repeat);
+	pSequencPlayer->setupSequence(intervalDurations, dataHeader.numberOfLights,
+		dataHeader.repeat);
 }

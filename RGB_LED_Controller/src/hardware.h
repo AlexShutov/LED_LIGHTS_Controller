@@ -49,8 +49,8 @@
 #define LED_PIN_BLUE 3
 
 // define port and pin which strobe is connected to
-#define FLASH_CHANNEL_DIRECTION_PORT DDRB
-#define FLASH_CHANNEL_PORT PORTB
+#define FLASH_CHANNEL_DIRECTION_PORT &DDRB
+#define FLASH_CHANNEL_PORT &PORTB
 #define FLASH_CHANNEL_PIN_NO 5
 //#define FLASH_CHANNEL_LOW_STATE_IS_ENABLED
 
