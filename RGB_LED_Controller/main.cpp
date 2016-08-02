@@ -171,7 +171,7 @@ void testStrobe(Strobe* pStrobe, SequencePlayer* pPlayer){
 	CommandStrobesDataHeader* pStrobeHeader = (CommandStrobesDataHeader*) buff;
 	pStrobeHeader->isItPermanent = false;
 	pStrobeHeader->isON = true;
-	pStrobeHeader->numberOfFlashes = 2;
+	pStrobeHeader->numberOfFlashes = 3;
 	pStrobeHeader->repeat = false;
 	
 	CommandStrobesDataRecord* pRec = (CommandStrobesDataRecord*)( pStrobeHeader + 1);
@@ -194,11 +194,21 @@ void testStrobe(Strobe* pStrobe, SequencePlayer* pPlayer){
 	pT->milliseconds = 0;
 	pT->seconds = 1;
 	pT->minutes = 0;
+	pRec++;
+	
+	pT = &pRec->flashDuration;
+	pT->milliseconds = 0;
+	pT->seconds = 1;
+	pT->minutes = 0;
+	pT = &pRec->pauseDuration;
+	pT->milliseconds = 0;
+	pT->seconds = 1;
+	pT->minutes = 0;
 	
 	IncomingCommand command;
 	command.setCommandCode(COMMAND_STROBE_SEQUENCE);
 	command.setDataBlockSize(sizeof(CommandStrobesDataHeader) + 
-		2 * sizeof(CommandStrobesDataRecord));
+		3 * sizeof(CommandStrobesDataRecord));
 	command.setBufferPtr(buff);
 	strobeExec.executeCommand(&command);
 }

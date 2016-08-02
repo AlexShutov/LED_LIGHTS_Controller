@@ -177,7 +177,9 @@ void StrobeLightsExecutor::setupPlayerAndCallbacks()
 	pSequencePlayer->setIntervalEndCallback(&callback);
 	pSequencePlayer->setTerminationCallback(&terminateCallback);
 	pSequencePlayer->setLoopMode(dataHeader.repeat);
-	pSequencePlayer->setupSequence(strobeDurations, dataHeader.numberOfFlashes, 
+	// we handle on and off alongside so *2
+	uint8_t sequenceLen = 2 * dataHeader.numberOfFlashes;
+	pSequencePlayer->setupSequence(strobeDurations, sequenceLen, 
 			dataHeader.repeat);
 	pStrobe->turnOn();
 	showOk();
