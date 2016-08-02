@@ -75,6 +75,7 @@ void CommExecutorFacade::setupLEDExecutors()
 	
 	strobeLightsExec.setCommandCode(COMMAND_STROBE_SEQUENCE);
 	strobeLightsExec.setSequencePlayer(&strobePlayer);
+	strobeLightsExec.setStrobe(&strobeChannel);
 	execChain.addExecutor(&strobeLightsExec);
 	
 }

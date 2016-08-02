@@ -224,7 +224,6 @@ int main(void)
 	
 	CommExecutorFacade facade;
 	facade.initialize();
-	facade.getStrobe()->turnOff();
 	
 	testStrobe(facade.getStrobe(), &sp);
 	
