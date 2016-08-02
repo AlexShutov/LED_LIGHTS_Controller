@@ -169,10 +169,10 @@ void testStrobe(Strobe* pStrobe, SequencePlayer* pPlayer){
 	strobeExec.setStrobe(pStrobe);
 	
 	CommandStrobesDataHeader* pStrobeHeader = (CommandStrobesDataHeader*) buff;
-	pStrobeHeader->isItPermanent = true;
+	pStrobeHeader->isItPermanent = false;
 	pStrobeHeader->isON = true;
 	pStrobeHeader->numberOfFlashes = 2;
-	pStrobeHeader->repeat = true;
+	pStrobeHeader->repeat = false;
 	
 	CommandStrobesDataRecord* pRec = (CommandStrobesDataRecord*)( pStrobeHeader + 1);
 	TimeInterval* pT = &pRec->flashDuration;

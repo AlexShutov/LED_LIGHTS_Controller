@@ -37,12 +37,22 @@ typedef struct{
 	TimeInterval pauseDuration;
 } CommandStrobesDataRecord;
 
+class StrobeTerminateCallback : public TimeIntervalGeneration::EventCallback
+{
+private:	
+	Strobe* pStrobe;
+	
+public:
+	virtual void onPulseStarted();
+	virtual void onPulseEnded();
+	void setStrobe(Strobe* pStrobe);
+};
+
 class StrobeCallback : public TimeIntervalGeneration::EventCallback
 {
 private:
 	Strobe* pStrobe;
-	TimeInterval* pPulseDuratioins;
-	TimeInterval* pPulsePauses;
+	TimeInterval* pData;
 	
 public:
 	StrobeCallback();
@@ -50,8 +60,7 @@ public:
 	virtual void onPulseEnded();
 	
 	void setStrobe(Strobe* pStrobe);
-	void setStrobeData(TimeInterval* pDurations,
-					   TimeInterval* pPauses);
+	void setStrobeData(TimeInterval* pData);
 	
 };
 
@@ -65,13 +74,13 @@ private:
 	// strobe flashes is represented by two intervals - time during which
 	// strobe active and inactivity time. We can play both intervals by
 	// SequencePlayer.
-	TimeInterval pulseDurations[MAX_SEQUENCE_LENGTH];
-	TimeInterval pulsePauses[MAX_SEQUENCE_LENGTH];
+	TimeInterval strobeDurations[2 * MAX_SEQUENCE_LENGTH];
 	// reference to strobe driver
 	Strobe* pStrobe;
 	TimeIntervalGeneration::SequencePlayer* pSequencePlayer;
 	
 	StrobeCallback callback;
+	StrobeTerminateCallback terminateCallback;
 	
 	// point to data header in command data block
 	CommandStrobesDataHeader dataHeader;

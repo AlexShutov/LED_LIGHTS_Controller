@@ -7,17 +7,57 @@
 
 
 #include "StrobeLightsExecutor.h"
-
+#include "../src/hardware_drivers/RGB_Led.h"
 using namespace StrobeRelated;
 using namespace TimeIntervalGeneration;
+
+void showOk()
+{
+	Color c;
+	c.red = 0;
+	c.green = 255;
+	c.blue = 0;
+	RGB_Led::setColor(&c);
+}
+
+void showError()
+{
+	Color c;
+	c.red = 255;
+	c.green = 0;
+	c.blue = 0;
+	RGB_Led::setColor(&c);
+}
+
+/************************************************************************/
+/*		Inherited from  StrobeTerminateCallback                         */
+/************************************************************************/
+
+void StrobeTerminateCallback::onPulseStarted()
+{
+	showOk();
+}
+
+void StrobeTerminateCallback::onPulseEnded()
+{
+	Color c;
+	c.red = 0;
+	c.green = 0;
+	c.blue = 0;
+	RGB_Led::setColor(&c);
+}
+
+void StrobeTerminateCallback::setStrobe(Strobe* pStrobe)
+{
+	this->pStrobe = pStrobe;
+}
 
 /************************************************************************/
 /*		Inherited from  StrobeCallback                                  */
 /************************************************************************/
 StrobeCallback::StrobeCallback()
 {
-	pPulseDuratioins = 0;
-	pPulsePauses = 0;
+	pData = 0;
 }
 
 void StrobeCallback::setStrobe(Strobe* pStrobe)
@@ -25,13 +65,26 @@ void StrobeCallback::setStrobe(Strobe* pStrobe)
 	this->pStrobe = pStrobe;
 }
 
-void StrobeCallback::setStrobeData(TimeInterval* pDurations, 
-								   TimeInterval* pPauses)
+void StrobeCallback::setStrobeData(TimeInterval* pData)
 {
-	pPulseDuratioins = pDurations;
-	pPulsePauses = pPauses;
+	this->pData = pData;
 }
 
+void StrobeCallback::onPulseStarted()
+{
+
+}
+
+void StrobeCallback::onPulseEnded()
+{
+	uint8_t pulseIndex = getItemIndex();
+	if (pulseIndex % 2 == 0){
+		showError();
+	}else {
+		showOk();
+	}
+	
+}
 
 /************************************************************************/
 /*		Inherited from  StrobeLightsExecutor                            */
@@ -64,6 +117,8 @@ bool StrobeLightsExecutor::revertCommand(IncomingCommand* pCommand)
 
 void StrobeLightsExecutor::setStrobe(Strobe* pStrobe){
 	this->pStrobe = pStrobe;
+	callback.setStrobe(pStrobe);
+	terminateCallback.setStrobe(pStrobe);
 }
 
 void StrobeLightsExecutor::setSequencePlayer(SequencePlayer* pPlayer)
@@ -85,17 +140,22 @@ void StrobeLightsExecutor::loadDataFromCommand(IncomingCommand* pCommand)
 	uint8_t flashCnt = pHeader->numberOfFlashes;
 	// copy durations of pulses and pauses to corresponding arrays
 	TimeInterval* pT = 0;
+	TimeInterval* pDest = strobeDurations;
 	CommandStrobesDataRecord* pCurrRec = 0;
 	for (uint8_t i = 0; i < flashCnt; ++i){
+		// point to current data record
 		pCurrRec = pFirstRecord + i;
-		// select pulse duration
+		// point to flash duration
 		pT = &pCurrRec->flashDuration;
-		pulseDurations[i] = *pT;
-		// select pause
+		// copy it
+		*pDest = *pT;
+		// move forward
+		pDest++;
+		// copy pause interval
 		pT = &pCurrRec->pauseDuration;
-		pulsePauses[i] = *pT;
+		*pDest = *pT;
+		pDest++;
 	}
-	
 }
 
 void StrobeLightsExecutor::setupPlayerAndCallbacks()
@@ -110,7 +170,16 @@ void StrobeLightsExecutor::setupPlayerAndCallbacks()
 		return;
 	}
 	pSequencePlayer->init();
+	// update data within callback
+	callback.setStrobeData(strobeDurations);
+	// here we have to know pulse number only, so no need
+	// in composite callback 'CallbackCustomActions'
+	pSequencePlayer->setIntervalEndCallback(&callback);
+	pSequencePlayer->setTerminationCallback(&terminateCallback);
 	pSequencePlayer->setLoopMode(dataHeader.repeat);
-	
+	pSequencePlayer->setupSequence(strobeDurations, dataHeader.numberOfFlashes, 
+			dataHeader.repeat);
+	pStrobe->turnOn();
+	showOk();
 }
 
