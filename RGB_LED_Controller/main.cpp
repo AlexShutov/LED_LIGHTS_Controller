@@ -172,33 +172,33 @@ void testStrobe(Strobe* pStrobe, SequencePlayer* pPlayer){
 	pStrobeHeader->isItPermanent = false;
 	pStrobeHeader->isON = true;
 	pStrobeHeader->numberOfFlashes = 3;
-	pStrobeHeader->repeat = false;
+	pStrobeHeader->repeat = true;
 	
 	CommandStrobesDataRecord* pRec = (CommandStrobesDataRecord*)( pStrobeHeader + 1);
 	TimeInterval* pT = &pRec->flashDuration;
 	
-	pT->milliseconds = 100;
+	pT->milliseconds = 20;
 	pT->seconds = 0;
 	pT->minutes = 0;
 	pT = &pRec->pauseDuration;
-	pT->milliseconds = 0;
-	pT->seconds = 1;
+	pT->milliseconds = 70;
+	pT->seconds = 0;
 	pT->minutes = 0;
 	pRec++;
 	
 	pT = &pRec->flashDuration;
-	pT->milliseconds = 0;
-	pT->seconds = 1;
+	pT->milliseconds = 50;
+	pT->seconds = 0;
 	pT->minutes = 0;
 	pT = &pRec->pauseDuration;
-	pT->milliseconds = 0;
-	pT->seconds = 1;
+	pT->milliseconds = 100;
+	pT->seconds = 0;
 	pT->minutes = 0;
 	pRec++;
 	
 	pT = &pRec->flashDuration;
-	pT->milliseconds = 0;
-	pT->seconds = 1;
+	pT->milliseconds = 200;
+	pT->seconds = 0;
 	pT->minutes = 0;
 	pT = &pRec->pauseDuration;
 	pT->milliseconds = 0;

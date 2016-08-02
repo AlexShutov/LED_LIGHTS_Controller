@@ -33,18 +33,22 @@ void showError()
 /*		Inherited from  StrobeTerminateCallback                         */
 /************************************************************************/
 
+/* 
+ This is a case when sequence is repeatable and it has just reached the end
+ and must be started again - turn on strobe channel
+ */
 void StrobeTerminateCallback::onPulseStarted()
 {
-	showOk();
+	pStrobe->turnOn();
 }
 
+/* 
+	Strobe sequence ended and is not in 'loop' mode -
+	turn off strobe channel
+*/
 void StrobeTerminateCallback::onPulseEnded()
 {
-	Color c;
-	c.red = 0;
-	c.green = 0;
-	c.blue = 0;
-	RGB_Led::setColor(&c);
+	pStrobe->turnOff();
 }
 
 void StrobeTerminateCallback::setStrobe(Strobe* pStrobe)
@@ -72,16 +76,20 @@ void StrobeCallback::setStrobeData(TimeInterval* pData)
 
 void StrobeCallback::onPulseStarted()
 {
-
 }
 
+/*
+	This callback handles end of a pulse. Id we processing
+	end of even pulse - strobe ended, turn channel off, and
+	otherwise - turn on for odd pulse index
+*/
 void StrobeCallback::onPulseEnded()
 {
 	uint8_t pulseIndex = getItemIndex();
 	if (pulseIndex % 2 == 0){
-		showError();
+		pStrobe->turnOff();
 	}else {
-		showOk();
+		pStrobe->turnOn();
 	}
 	
 }
@@ -182,6 +190,5 @@ void StrobeLightsExecutor::setupPlayerAndCallbacks()
 	pSequencePlayer->setupSequence(strobeDurations, sequenceLen, 
 			dataHeader.repeat);
 	pStrobe->turnOn();
-	showOk();
 }
 
