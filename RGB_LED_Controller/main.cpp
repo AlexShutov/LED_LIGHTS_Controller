@@ -134,12 +134,16 @@ class RedLightEndAction : public ExternalEndCallback
 public:
 	void onSequenceRestarted(uint8_t commandCode)
 	{
-		ok();
+		if (commandCode == COMMAND_CODE_LIGHT_SEQUENCE){
+			ok();
+		}
 	}	
 	
 	void onSequenceEnded(uint8_t commandCode)
 	{
-		whiteColor();
+		if (commandCode == COMMAND_CODE_LIGHT_SEQUENCE) {
+			whiteColor();
+		}
 	}
 };
 RedLightEndAction redLightAction;
@@ -149,7 +153,7 @@ ColorSequenceExecutor seqExec;
 StrobeLightsExecutor strobeExec;
 char buff[200];
 void testSequencePlayer(){
-	
+	seqExec.setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
 	seqExec.setSequencePlayer(&sp);
 	seqExec.setExternalEndCallback(&redLightAction);
 	
