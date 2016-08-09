@@ -120,17 +120,43 @@ void assert(char val, char needed){
 	}
 }
 
+void whiteColor(){
+	Color c;
+	Color::clear(&c);
+	c.red = 255;
+	c.green = 255;
+	c.blue = 255;
+	RGB_Led::setColor(&c);
+}
+
+class RedLightEndAction : public ExternalEndCallback
+{
+public:
+	void onSequenceRestarted(uint8_t commandCode)
+	{
+		ok();
+	}	
+	
+	void onSequenceEnded(uint8_t commandCode)
+	{
+		whiteColor();
+	}
+};
+RedLightEndAction redLightAction;
+
+
 ColorSequenceExecutor seqExec;
 StrobeLightsExecutor strobeExec;
 char buff[200];
 void testSequencePlayer(){
 	
 	seqExec.setSequencePlayer(&sp);
+	seqExec.setExternalEndCallback(&redLightAction);
 	
 	CommColorHeader* pH = (CommColorHeader*) buff;
 	pH->isSmoothSwitch= true;
 	pH->numberOfLights = 3;
-	pH->repeat = true;
+	pH->repeat = false;
 	
 	CommColorSequenceRecord* pRec = (CommColorSequenceRecord*)( pH + 1);
 	pRec->pulseColor.red = 255;
@@ -220,12 +246,12 @@ int main(void)
 	TimeIntervalGenerator::setupTimedPulse();
 	sp.setPulseGeneratorIndex(1);
 	
-	//testSequencePlayer();
+	testSequencePlayer();
 	
 	CommExecutorFacade facade;
 	facade.initialize();
 	
-	testStrobe(facade.getStrobe(), &sp);
+	//testStrobe(facade.getStrobe(), &sp);
 	
 	while (1) 
     {		

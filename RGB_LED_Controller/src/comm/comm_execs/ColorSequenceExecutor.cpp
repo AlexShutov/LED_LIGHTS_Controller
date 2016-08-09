@@ -75,6 +75,10 @@ ColorSequenceExecutor::ColorSequenceExecutor()
 	colorCallback.setColor(intervalColors, MAX_SEQUENCE_LENGTH);
 	colorCallback.setIsSmoothSwitching(false);
 	compositeCallback.setCustomActionToMany(&colorCallback, MAX_SEQUENCE_LENGTH);
+	// initialize 'end callback' functionality (EndCallbackDispatcher)
+	terminateDispatcher.setExec(this);
+	setEndCallbackDispatcher(&terminateDispatcher);
+	terminateDispatcher.setEndAction(&terminateCallback);
 } //LightSequenceExecutor
 
 // default destructor
@@ -166,7 +170,8 @@ void ColorSequenceExecutor::setupPlayerAndCallbacks()
 	pSequencPlayer->setLoopMode(dataHeader.repeat);
 	// set interval and end callbacks, specific to this command type
 	pSequencPlayer->setIntervalEndCallback(&compositeCallback);
-	pSequencPlayer->setTerminationCallback(&terminateCallback);
+	// accessor return pointer to 'terminateDispatcher'
+	pSequencPlayer->setTerminationCallback(getDecoratedEndCallback());
 	pSequencPlayer->setupSequence(intervalDurations, dataHeader.numberOfLights,
 		dataHeader.repeat);
 }

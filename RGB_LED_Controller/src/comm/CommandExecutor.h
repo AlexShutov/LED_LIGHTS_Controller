@@ -10,12 +10,43 @@
 #define __COMMANDEXECUTOR_H__
 
 #include <avr/io.h>
+#include "../src/timed_pulse/TimeIntervalGenerator.h"
 #include "IncomingCommand.h"
+
+class CommandExecutor;
+
+class ExternalEndCallback
+{
+public:
+	virtual void onSequenceRestarted(uint8_t commandCode) = 0;
+	virtual void onSequenceEnded(uint8_t commandCode) = 0;	
+};
+
+/**
+	Adapted version of Decorator. uses external callback and some
+	action, defined by command executor. (pEndAction)
+*/
+class EndCallbackDispatcher : public TimeIntervalGeneration::EventCallback
+{
+private:
+	CommandExecutor* pExec;
+	ExternalEndCallback* pCallback;
+	TimeIntervalGeneration::EventCallback* pEndAction;
+public:
+	EndCallbackDispatcher();
+	void onPulseStarted();
+	void onPulseEnded();
+	void setExec(CommandExecutor* pExec);
+	void setExternalCallback(ExternalEndCallback* pCallback);
+	ExternalEndCallback* getExternalCallback();
+	void setEndAction(TimeIntervalGeneration::EventCallback* pAction);
+};
 
 class CommandExecutor
 {
 private:
 	uint8_t commandCode;
+	EndCallbackDispatcher* pEndCallbackDispatcher;
 	
 //functions
 public:
@@ -62,7 +93,23 @@ public:
 	virtual bool resumeCommand(uint8_t commandCode) = 0;
 	
 	void setCommandCode(uint8_t code);
+
+	void setExternalEndCallback(ExternalEndCallback* pCallback);
+	ExternalEndCallback* getExternalEndCallback();
 	
+	TimeIntervalGeneration::EventCallback* getDecoratedEndCallback();
+
+protected:
+	/*
+		Pointer to EndCallbackDispatcher instance MUST be set if you want to
+		use external callback.
+	*/
+	void setEndCallbackDispatcher(EndCallbackDispatcher* pDispatcher);
+	/*
+		Set end action in ExternalCallback (dispatcher must be set before 
+		calling this method )
+	*/
+	void setEndAction( TimeIntervalGeneration::EventCallback* pAction);
 }; //CommandExecutor
 
 #endif //__COMMANDEXECUTOR_H__

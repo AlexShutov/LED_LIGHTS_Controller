@@ -88,6 +88,8 @@ private:
 	// callbacks, in which each item is responsible for its own interval
 	TimeIntervalGeneration::EventCallbackCustomActions compositeCallback;
 	
+	EndCallbackDispatcher terminateDispatcher;
+	
 	// callback which is called when sequence have ended
 	SequenceTerminateCallback terminateCallback;
 	
