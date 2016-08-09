@@ -106,11 +106,38 @@ bool ColorSequenceExecutor::executeCommand(IncomingCommand* pCommand){
 	// Use this executor as TimeInterval mapper
 	loadData(pCommand);
 	setupPlayerAndCallbacks();
+	return true;
 }
+
+bool ColorSequenceExecutor::isRGBCommand()
+{
+	return true;
+}
+
+bool ColorSequenceExecutor::isCommandResumable()
+{
+	return true;
+}
+
 /* Stop playing current sequence and turn off RGB LED */
-bool ColorSequenceExecutor::revertCommand(IncomingCommand* pCommand){
+bool ColorSequenceExecutor::stopCommand(uint8_t commandCode)
+{
+	if (commandCode != getCommandCode()){
+		return false;
+	}
 	pSequencPlayer->stopPlaying();
 	RGB_Led::setColor(&colorOff);
+	return true;
+}
+
+bool ColorSequenceExecutor::resumeCommand(uint8_t commandCode)
+{
+	if (commandCode != getCommandCode()){
+		return false;
+	}
+	pSequencPlayer->stopPlaying();
+	setupPlayerAndCallbacks();
+	return true;
 }
 
 void ColorSequenceExecutor::loadData(IncomingCommand* pCommand){

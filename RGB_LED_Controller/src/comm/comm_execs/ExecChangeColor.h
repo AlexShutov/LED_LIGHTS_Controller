@@ -9,7 +9,9 @@
 #ifndef __EXECCHANGECOLOR_H__
 #define __EXECCHANGECOLOR_H__
 
+#include "../src/hardware_drivers/RGB_Led.h"
 #include "../src/comm/CommandExecutor.h"
+
 
 namespace LedCommandExecutors {
 
@@ -21,14 +23,19 @@ class ExecChangeColor : public CommandExecutor
 public:
 protected:
 private:
-
+	Color currColor;
 //functions
 public:
 	ExecChangeColor();
 	virtual ~ExecChangeColor();
 	
 	virtual bool executeCommand(IncomingCommand* pCommand);
-	virtual bool revertCommand(IncomingCommand* pCommand);
+	
+	virtual bool isRGBCommand();
+	virtual bool isCommandResumable();
+	
+	virtual bool stopCommand(uint8_t commandCode);
+	virtual bool resumeCommand(uint8_t commandCode);
 	
 protected:
 private:

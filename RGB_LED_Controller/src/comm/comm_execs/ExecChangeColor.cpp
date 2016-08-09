@@ -6,7 +6,6 @@
 */
 
 #include "ExecChangeColor.h"
-#include "../src/hardware_drivers/RGB_Led.h"
 
 using namespace LedCommandExecutors;
 
@@ -22,12 +21,42 @@ ExecChangeColor::~ExecChangeColor()
 
 bool ExecChangeColor::executeCommand(IncomingCommand* pCommand){
 	Color* pColor = (Color*) pCommand->getBufferPtr();
-	RGB_Led::setColor(pColor);
-	return false;
+	currColor = *pColor;
+	// presumable color data is copied, process command
+	return resumeCommand(pCommand->getCommandCode());
 }
 
-bool ExecChangeColor::revertCommand(IncomingCommand* pCommand){
-	
+bool ExecChangeColor::isRGBCommand()
+{
+	return true;
 }
+
+bool ExecChangeColor::isCommandResumable()
+{
+	return true;
+}
+
+bool ExecChangeColor::stopCommand(uint8_t commandCode)
+{
+	if (commandCode != getCommandCode())
+	{
+		return false;
+	}
+	Color c;
+	Color::clear(&c);
+	RGB_Led::setColor(&c);
+	return true;
+}
+
+bool ExecChangeColor::resumeCommand(uint8_t commandCode){
+	if (commandCode != getCommandCode()){
+		// command code mismatch - some mistake has occurred
+		return false;
+	}
+	RGB_Led::setColor(&currColor);
+	return true;
+}
+
+
 
 

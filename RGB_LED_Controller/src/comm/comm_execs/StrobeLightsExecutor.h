@@ -92,7 +92,12 @@ public:
 	virtual ~StrobeLightsExecutor();
 	
 	virtual bool executeCommand(IncomingCommand* pCommand);
-	virtual bool revertCommand(IncomingCommand* pCommand);
+	
+	virtual bool isRGBCommand();
+	virtual bool isCommandResumable();
+	
+	virtual bool stopCommand(uint8_t commandCode);
+	virtual bool resumeCommand(uint8_t commandCode);
 	
 	void setStrobe(Strobe* pStrobe);
 	void setSequencePlayer(TimeIntervalGeneration::SequencePlayer* pPlayer);

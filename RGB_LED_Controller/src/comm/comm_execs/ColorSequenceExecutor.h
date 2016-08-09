@@ -99,7 +99,12 @@ public:
 	virtual ~ColorSequenceExecutor();
 		
 	virtual bool executeCommand(IncomingCommand* pCommand);
-	virtual bool revertCommand(IncomingCommand* pCommand);
+	
+	virtual bool isRGBCommand();
+	virtual bool isCommandResumable();
+	
+	virtual bool stopCommand(uint8_t commandCode);
+	virtual bool resumeCommand(uint8_t commandCode);
 	
 	/** pull TimeInterval for i light from general command buffer */
 	virtual TimeInterval* getTimeInterval(uint8_t index);

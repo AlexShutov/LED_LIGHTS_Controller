@@ -30,7 +30,7 @@ public:
 	
 	// 'Chain of commands' pattern
 	virtual bool executeCommand(IncomingCommand* pCommand);
-	virtual bool revertCommand(IncomingCommand* pCommand);
+	
 	/* find first empty place in exec chain and insert exec to into it */
 	bool addExecutor(CommandExecutor* pExec);
 	
@@ -38,6 +38,11 @@ public:
 	CommandExecutor* getExecutor(uint8_t commandCode);
 	
 	uint8_t getCommandCode();
+	/* nope for both */
+	bool isRGBCommand();
+	bool isCommandResumable();
+	bool stopCommand(uint8_t commandCode);
+	bool resumeCommand(uint8_t commandCode);
 	
 protected:
 private:

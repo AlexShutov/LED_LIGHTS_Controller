@@ -110,17 +110,45 @@ StrobeLightsExecutor::~StrobeLightsExecutor()
 
 bool StrobeLightsExecutor::executeCommand(IncomingCommand* pCommand)
 {
+	// no call to 'resumeCommand' because player has to be stopped before
+	// re-scheduling playing and loading command data and if we call  
+	//'resumeCommand' it will be done twice
 	pSequencePlayer->stopPlaying();
 	loadDataFromCommand(pCommand);
 	setupPlayerAndCallbacks();
+	return true;
 }
 
-bool StrobeLightsExecutor::revertCommand(IncomingCommand* pCommand)
+bool StrobeLightsExecutor::isRGBCommand()
 {
+	return false;
+}
+
+bool StrobeLightsExecutor::isCommandResumable()
+{
+	return false;
+}
+
+bool StrobeLightsExecutor::stopCommand(uint8_t commandCode)
+{
+	if (commandCode != getCommandCode()){
+		return false;
+	}
 	// stop playing strobe sequence
 	pSequencePlayer->stopPlaying();
 	// and turn off strobe channel
 	pStrobe->turnOff();
+	return true;
+}
+
+bool StrobeLightsExecutor::resumeCommand(uint8_t commandCode)
+{
+	if (commandCode != getCommandCode()){
+		return false;
+	}
+	pSequencePlayer->stopPlaying();
+	setupPlayerAndCallbacks();
+	return true;
 }
 
 void StrobeLightsExecutor::setStrobe(Strobe* pStrobe){

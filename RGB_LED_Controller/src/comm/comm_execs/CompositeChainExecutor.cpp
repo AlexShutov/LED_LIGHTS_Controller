@@ -33,15 +33,6 @@ bool CompositeChainExecutor::executeCommand(IncomingCommand* pCommand){
 	return false;
 }
 
-bool CompositeChainExecutor::revertCommand(IncomingCommand* pCommand){
-	uint8_t commandCode = pCommand->getCommandCode();
-	CommandExecutor* pFound = getExecutor(commandCode);
-	if (pFound){
-		pFound->revertCommand(pCommand);
-		return true;
-	}
-	return false;
-}
 
 bool CompositeChainExecutor::addExecutor(CommandExecutor* pExec){
 	if (chainLenght >= MAX_NUMBER_OF_EXECS){
@@ -64,4 +55,33 @@ uint8_t CompositeChainExecutor::getCommandCode(){
 	return 255;
 }
 
+bool CompositeChainExecutor::isCommandResumable()
+{
+	return false;
+}
+
+bool CompositeChainExecutor::isRGBCommand()
+{
+	return false;
+}
+
+bool CompositeChainExecutor::stopCommand(uint8_t commandCode)
+{
+	CommandExecutor* pFound = getExecutor(commandCode);
+	if (pFound){
+		pFound->stopCommand(commandCode);
+		return true;
+	}
+	return false;
+}
+
+bool CompositeChainExecutor::resumeCommand(uint8_t commandCode)
+{
+	CommandExecutor* pFound = getExecutor(commandCode);
+	if (pFound){
+		pFound->resumeCommand(commandCode);
+		return true;
+	}
+	return false;
+}
 
