@@ -13,6 +13,9 @@
 #include "../src/timed_pulse/TimeIntervalGenerator.h"
 #include "IncomingCommand.h"
 
+// use big value (0 is in use already)
+#define COMMAND_CODE_NONE 255
+
 class CommandExecutor;
 
 class ExternalEndCallback

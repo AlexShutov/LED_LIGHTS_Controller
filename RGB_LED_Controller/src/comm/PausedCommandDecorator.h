@@ -28,6 +28,14 @@ private:
 	CommandExecutor* pDecoree;
 	// keep all command executors and can return executor by command code
 	CompositeChainExecutor* pExecStorage;
+	
+	/* we can use command codes instead of pointers because we have a reference to 
+	  executor store and finding right command by command code is a quite 
+	  rear operation 
+	*/
+	uint8_t currentCommand;
+	uint8_t previousCommand;
+	
 //functions
 public:
 	
@@ -68,6 +76,13 @@ private:
 	Command code is minimal info for checking it.
 	*/
 	bool canProceed(uint8_t commandCode);
+	/* logic for saving current command to history before starting anew,
+	 this class' state must pass validation ( see executeCommand() and 
+	 canProceed()
+	*/
+	void handleIncomingCommand(uint8_t incomingCode, bool isResumable);
+	/* Logic for popping command from history and resuming it */
+	void handleEndedCommand(uint8_t commandCode);
 
 }; //PausedCommandDecorator
 

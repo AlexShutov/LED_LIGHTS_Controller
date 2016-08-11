@@ -12,6 +12,8 @@
 PausedCommandDecorator::PausedCommandDecorator()
 {
 	pDecoree = 0;
+	currentCommand = COMMAND_CODE_NONE;
+	previousCommand = COMMAND_CODE_NONE;
 } //PausedCommandDecorator
 
 // default destructor
@@ -59,7 +61,9 @@ bool PausedCommandDecorator::executeCommand(IncomingCommand* pCommand)
 	if (!canProceed(pCommand->getCommandCode())){
 		return pDecoree->executeCommand(pCommand);
 	}
-	
+	bool isIncomingCommandResumable = pExecStorage->getExecutor(
+		pCommand->getCommandCode())->isCommandResumable();
+	handleIncomingCommand(pCommand->getCommandCode(), isIncomingCommandResumable);
 	return pDecoree->executeCommand(pCommand);
 }
 
@@ -69,21 +73,12 @@ bool PausedCommandDecorator::executeCommand(IncomingCommand* pCommand)
 
 void PausedCommandDecorator::onSequenceRestarted(uint8_t commandCode)
 {
-	
+	// do nothing, command not ended.
 }
 
 void PausedCommandDecorator::onSequenceEnded(uint8_t commandCode)
 {
-	bool isRgb = pExecStorage->getExecutor(commandCode)->isRGBCommand();
-	Color c;
-	if (isRgb){
-		Color::clear(&c);
-		c.green = 255;
-	} else {
-		Color::clear(&c);
-		c.red = 255;
-	}
-	RGB_Led::setColor(&c);
+	handleEndedCommand(commandCode);
 }
 
 /************************************************************************/
@@ -95,4 +90,34 @@ bool PausedCommandDecorator::canProceed(uint8_t commandCode)
 	// command storage isn't set, proceed without history support
 	if (!pExecStorage) return false;
 	CommandExecutor* pExec = pExecStorage->getExecutor(commandCode);
+}
+
+void PausedCommandDecorator::handleIncomingCommand(uint8_t incomingCode, 
+												   bool isResumable)
+{
+	/* This case is when this is very first command */
+	if (currentCommand == COMMAND_CODE_NONE){
+		// save command as current one
+		currentCommand = incomingCode;
+		return;
+	}
+	CommandExecutor* pCurrExec = pExecStorage->getExecutor(currentCommand);
+	/* We're were asked to start the same command again - do nothing 
+	 here, executor will restart itself
+	 */
+	if (incomingCode == currentCommand){
+		return;
+	}
+	/* stop active command */
+	pCurrExec->stopCommand(currentCommand);
+	if (pCurrExec->isCommandResumable()){
+		previousCommand = currentCommand;
+	}
+	currentCommand = incomingCode;
+	
+}
+
+void PausedCommandDecorator::handleEndedCommand(uint8_t commandCode)
+{
+	
 }
