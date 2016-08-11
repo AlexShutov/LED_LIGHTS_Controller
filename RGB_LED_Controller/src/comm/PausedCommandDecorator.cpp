@@ -90,6 +90,7 @@ bool PausedCommandDecorator::canProceed(uint8_t commandCode)
 	// command storage isn't set, proceed without history support
 	if (!pExecStorage) return false;
 	CommandExecutor* pExec = pExecStorage->getExecutor(commandCode);
+	return pExec->isRGBCommand();
 }
 
 void PausedCommandDecorator::handleIncomingCommand(uint8_t incomingCode, 
@@ -119,5 +120,15 @@ void PausedCommandDecorator::handleIncomingCommand(uint8_t incomingCode,
 
 void PausedCommandDecorator::handleEndedCommand(uint8_t commandCode)
 {
-	
+	// it was the only command
+	if (COMMAND_CODE_NONE == previousCommand){
+		currentCommand = COMMAND_CODE_NONE;
+		return;
+	}
+	// set previous command as current
+	currentCommand = previousCommand;
+	// and clear previous command
+	previousCommand = COMMAND_CODE_NONE;
+	CommandExecutor* pExec = pExecStorage->getExecutor(currentCommand);
+	pExec->resumeCommand(currentCommand);
 }

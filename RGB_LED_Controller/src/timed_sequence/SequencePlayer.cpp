@@ -111,10 +111,10 @@ void SequencePlayer::onPulseEnded(){
 		if (isLooping){
 			currItemPosition = 0;
 		} else {
-			stopPlaying();
+			//stopPlaying();
 			// we're done, call terminate event here if there is any.
 			if (pTerminationCallback){
-				pTerminationCallback->onPulseStarted();
+				//pTerminationCallback->onPulseStarted();
 				pTerminationCallback->onPulseEnded();
 			}
 			return;
