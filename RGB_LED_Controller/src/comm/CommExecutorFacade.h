@@ -20,6 +20,7 @@
 #include "../src/comm/comm_execs/ColorSequenceExecutor.h"
 #include "../src/comm/comm_execs/StrobeLightsExecutor.h"
 #include "../src/timed_sequence/SequencePlayer.h"
+#include "../src/comm/PausedCommandDecorator.h"
 
 
 
@@ -53,8 +54,10 @@ private:
 	LedCommandExecutors::ColorSequenceExecutor execLightSequence;
 	
 	// COMMAND_STROBE_SEQUENCE
-	StrobeRelated::StrobeLightsExecutor strobeLightsExec;
+	StrobeRelated::StrobeLightsExecutor execStrobeLights;
 	
+	// Support for the last paused command
+	PausedCommandDecorator commandHistory;
 
 //functions
 public:
@@ -71,6 +74,7 @@ private:
 	CommExecutorFacade& operator=( const CommExecutorFacade &c );
 	/* Initialize strobe channel */
 	void initStrobeChannel();
+	void initCommandHistorySupport();
 	void setupLEDExecutors();
 	
 

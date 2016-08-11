@@ -26,8 +26,16 @@ void CommExecutorFacade::pollForCommand(){
 void CommExecutorFacade::initialize(){
 	// initialize strobe channel
 	initStrobeChannel();
+	
+	/* support for command history must be initialized before executors, because 
+	   those use 'PausedCommandDecorator' as its end callback for restoring
+	   paused command. This init method MUST be here, because commandReceiver hands
+	   commands to commandHistory decorator
+	*/
+	initCommandHistorySupport();
+	
 	// bind command receiver to chain of commands
-	commandReceiver.setCommandExecutor(&execChain);
+	commandReceiver.setCommandExecutor(&commandHistory);
 	// connect command receiver to uart. if some command executor need to 
 	// change data source, we can pass command receiver and uart data source to that
 	// executor (for example, restoring and saving current command to eeprom)
@@ -40,6 +48,8 @@ void CommExecutorFacade::initialize(){
 	// TimedPulse with index 1 - handles strobe flashes
 	strobePlayer.setPulseGeneratorIndex(1);
 	strobePlayer.init();
+	
+	
 	
 	/* initialize command processors for LED related commands */
 	setupLEDExecutors();	
@@ -64,18 +74,28 @@ void CommExecutorFacade::initStrobeChannel()
 							 !strobe_low_state_en);
 }
 
+void CommExecutorFacade::initCommandHistorySupport()
+{
+	// 'execChain' is a composite executor - it keep all real executors.
+	commandHistory.setExecStorage(&execChain);
+	commandHistory.setDecoree(&execChain);
+}
+
 void CommExecutorFacade::setupLEDExecutors()
 {	
 	execLightSequence.setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
 	execLightSequence.setSequencePlayer(&ledLightsSequencePlayer);
+	execLightSequence.setExternalEndCallback(&commandHistory);
 	execChain.addExecutor(&execLightSequence);
 	
 	execChangeColor.setCommandCode(COMMAND_CODE_CHANGE_COLOR);
+	execChangeColor.setExternalEndCallback(&commandHistory);
 	execChain.addExecutor(&execChangeColor);
 	
-	strobeLightsExec.setCommandCode(COMMAND_STROBE_SEQUENCE);
-	strobeLightsExec.setSequencePlayer(&strobePlayer);
-	strobeLightsExec.setStrobe(&strobeChannel);
-	execChain.addExecutor(&strobeLightsExec);
+	execStrobeLights.setCommandCode(COMMAND_STROBE_SEQUENCE);
+	execStrobeLights.setSequencePlayer(&strobePlayer);
+	execStrobeLights.setStrobe(&strobeChannel);
+	execStrobeLights.setExternalEndCallback(&commandHistory);
+	execChain.addExecutor(&execStrobeLights);
 	
 }

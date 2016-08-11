@@ -19,6 +19,7 @@
 #include "../src/timed_sequence/SequencePlayer.h"
 #include "../src/timed_pulse/EventCallbackCustomActions.h"
 #include "../src/comm/comm_execs/StrobeLightsExecutor.h"
+#include "../src/comm/PausedCommandDecorator.h"
 
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallbackDecorator;
@@ -250,13 +251,13 @@ int main(void)
 	TimeIntervalGenerator::setupTimedPulse();
 	sp.setPulseGeneratorIndex(1);
 	
-	testSequencePlayer();
+	//testSequencePlayer();
 	
 	CommExecutorFacade facade;
 	facade.initialize();
 	
 	//testStrobe(facade.getStrobe(), &sp);
-	
+	PausedCommandDecorator pcd;
 	while (1) 
     {		
 		facade.pollForCommand();
