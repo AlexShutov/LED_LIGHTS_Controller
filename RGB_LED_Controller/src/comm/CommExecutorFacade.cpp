@@ -83,19 +83,19 @@ void CommExecutorFacade::initCommandHistorySupport()
 
 void CommExecutorFacade::setupLEDExecutors()
 {	
+	execChangeColor.setCommandCode(COMMAND_CODE_CHANGE_COLOR);
+	execChangeColor.setExternalEndCallback(&commandHistory);
+	execChain.addExecutor(&execChangeColor);
+	
 	execLightSequence.setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
 	execLightSequence.setSequencePlayer(&ledLightsSequencePlayer);
 	execLightSequence.setExternalEndCallback(&commandHistory);
 	execChain.addExecutor(&execLightSequence);
 	
-	execChangeColor.setCommandCode(COMMAND_CODE_CHANGE_COLOR);
-	execChangeColor.setExternalEndCallback(&commandHistory);
-	execChain.addExecutor(&execChangeColor);
-	
 	execStrobeLights.setCommandCode(COMMAND_STROBE_SEQUENCE);
 	execStrobeLights.setSequencePlayer(&strobePlayer);
 	execStrobeLights.setStrobe(&strobeChannel);
-	execStrobeLights.setExternalEndCallback(&commandHistory);
+	//execStrobeLights.setExternalEndCallback(&commandHistory);
 	execChain.addExecutor(&execStrobeLights);
 	
 }

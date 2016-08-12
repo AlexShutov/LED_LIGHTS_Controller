@@ -10,6 +10,7 @@
 #define __COMMANDEXECUTOR_H__
 
 #include <avr/io.h>
+#include "../src/utils/Log.h"
 #include "../src/timed_pulse/TimeIntervalGenerator.h"
 #include "IncomingCommand.h"
 

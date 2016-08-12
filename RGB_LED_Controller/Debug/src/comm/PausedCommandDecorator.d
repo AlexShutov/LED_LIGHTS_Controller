@@ -13,7 +13,7 @@ src/comm/PausedCommandDecorator.d src/comm/PausedCommandDecorator.o: \
  g:\programs\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  g:\programs\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
  ../src/comm/PausedCommandDecorator.h \
- ../src/../src/comm/CommandExecutor.h \
+ ../src/../src/comm/CommandExecutor.h ../src/../src/utils/Log.h \
  ../src/../src/timed_pulse/TimeIntervalGenerator.h \
  ../src/../src/timed_pulse/TimedPulse.h ../src/ASF/mega/utils/compiler.h \
  g:\programs\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\4.9.2\include\stdbool.h \
@@ -55,6 +55,8 @@ g:\programs\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\l
 ../src/comm/PausedCommandDecorator.h:
 
 ../src/../src/comm/CommandExecutor.h:
+
+../src/../src/utils/Log.h:
 
 ../src/../src/timed_pulse/TimeIntervalGenerator.h:
 

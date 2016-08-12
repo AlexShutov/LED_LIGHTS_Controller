@@ -12,6 +12,7 @@
 #include "../src/Utils/operators.h"
 #include "hardware_drivers/RGB_Led.h"
 #include "hardware_drivers/Strobe.h"
+#include "../src/utils/Log.h"
 
 #include "../src/comm/CommExecutorFacade.h"
 #include "../src/timed_pulse/TimeIntervalGenerator.h"
@@ -249,14 +250,13 @@ int main(void)
 	RGB_Led::init();
 	uartInit();
 	TimeIntervalGenerator::setupTimedPulse();
-	sp.setPulseGeneratorIndex(1);
+	//sp.setPulseGeneratorIndex(1);
 	
 	//testSequencePlayer();
 	
 	CommExecutorFacade facade;
 	facade.initialize();
 	
-	//testStrobe(facade.getStrobe(), &sp);
 	PausedCommandDecorator pcd;
 	while (1) 
     {		

@@ -7,27 +7,9 @@
 
 
 #include "StrobeLightsExecutor.h"
-#include "../src/hardware_drivers/RGB_Led.h"
 using namespace StrobeRelated;
 using namespace TimeIntervalGeneration;
 
-void showOk()
-{
-	Color c;
-	c.red = 0;
-	c.green = 255;
-	c.blue = 0;
-	RGB_Led::setColor(&c);
-}
-
-void showError()
-{
-	Color c;
-	c.red = 255;
-	c.green = 0;
-	c.blue = 0;
-	RGB_Led::setColor(&c);
-}
 
 /************************************************************************/
 /*		Inherited from  StrobeTerminateCallback                         */
