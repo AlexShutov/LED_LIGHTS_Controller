@@ -82,6 +82,9 @@ private:
 	StrobeCallback callback;
 	StrobeTerminateCallback terminateCallback;
 	
+	// dispatches end event to external callback
+	EndCallbackDispatcher terminateDispatcher;
+	
 	// point to data header in command data block
 	CommandStrobesDataHeader dataHeader;
 	TimeInterval* pFirstInterval;

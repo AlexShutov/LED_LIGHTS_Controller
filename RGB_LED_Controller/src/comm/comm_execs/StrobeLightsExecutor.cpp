@@ -83,6 +83,10 @@ void StrobeCallback::onPulseEnded()
 // default constructor
 StrobeLightsExecutor::StrobeLightsExecutor()
 {
+	terminateDispatcher.setExec(this);
+	setEndCallbackDispatcher(&terminateDispatcher);
+	terminateDispatcher.setEndAction(&terminateCallback);
+	
 } //FlashingLightSequence
 
 // default destructor
@@ -193,7 +197,7 @@ void StrobeLightsExecutor::setupPlayerAndCallbacks()
 	// here we have to know pulse number only, so no need
 	// in composite callback 'CallbackCustomActions'
 	pSequencePlayer->setIntervalEndCallback(&callback);
-	pSequencePlayer->setTerminationCallback(&terminateCallback);
+	pSequencePlayer->setTerminationCallback(&terminateDispatcher);
 	pSequencePlayer->setLoopMode(dataHeader.repeat);
 	// we handle on and off alongside so *2
 	uint8_t sequenceLen = 2 * dataHeader.numberOfFlashes;
