@@ -63,6 +63,11 @@ void CommExecutorFacade::updateManually()
 	ledLightsSequencePlayer.updateManually();
 }
 
+EESupport::EEManager* CommExecutorFacade::getEEManager()
+{
+	return &eeManager;
+}
+
 Strobe* CommExecutorFacade::getStrobe()
 {
 	return &strobeChannel;

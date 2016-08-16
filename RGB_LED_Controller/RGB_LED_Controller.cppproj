@@ -357,6 +357,12 @@
     <Compile Include="src\comm\SourceOfData.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\EEManager\EEManager.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\EEManager\EEManager.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\hardware.h">
       <SubType>compile</SubType>
     </Compile>
@@ -581,6 +587,7 @@
     <Folder Include="src\comm" />
     <Folder Include="src\hardware_drivers" />
     <Folder Include="src\include" />
+    <Folder Include="src\EEManager" />
     <Folder Include="src\utils" />
     <Folder Include="src\uart" />
     <Folder Include="src\timed_sequence" />

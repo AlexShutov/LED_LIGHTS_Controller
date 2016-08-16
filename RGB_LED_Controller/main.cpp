@@ -7,6 +7,9 @@
 
 #include <avr/delay.h>
 #include <avr/io.h>
+
+#include <avr/eeprom.h>
+
 #include "compiler.h"
 #include "hardware.h"
 #include "../src/Utils/operators.h"
@@ -22,6 +25,8 @@
 #include "../src/comm/comm_execs/StrobeLightsExecutor.h"
 #include "../src/comm/PausedCommandDecorator.h"
 
+#include "../src/EEManager/EEManager.h"
+
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallbackDecorator;
 using TimeIntervalGeneration::SequencePlayer;
@@ -29,6 +34,7 @@ using TimeIntervalGeneration::EventCallbackCustomActions;
 
 using namespace LedCommandExecutors;
 using namespace StrobeRelated;
+using namespace EESupport;
 
 extern "C" {
 	#include "../src/include/uart_stuff.h"
@@ -136,6 +142,8 @@ ColorSequenceExecutor seqExec;
 StrobeLightsExecutor strobeExec;
 char buff[200];
 
+#define EEBUFFER_SIZE 200
+#define EE_OFFSET 100
 
 void testStrobe(Strobe* pStrobe, SequencePlayer* pPlayer){
 	strobeExec.setSequencePlayer(pPlayer);
@@ -188,6 +196,25 @@ void testStrobe(Strobe* pStrobe, SequencePlayer* pPlayer){
 
 
 
+void testEEProm(EEManager* eeManager)
+{
+	Color c;
+	Color::clear(&c);
+	c.red = 245;
+	c.green = 0;
+	c.blue = 10;
+	
+	//eeManager->writeData(1, 10, &c, sizeof(Color));
+	
+	Color::clear(&c);
+	
+	eeManager->readData(1, 10, &c, sizeof(Color));
+	
+	RGB_Led::setColor(&c);
+	
+}
+
+
 int main(void)
 {
 	RGB_Led::init();
@@ -197,7 +224,11 @@ int main(void)
 	CommExecutorFacade facade;
 	
 	facade.initialize();
-		
+	
+	testEEProm(facade.getEEManager());
+	//testWriteEEPROM();
+	//testReadEEPROM();
+	
 	PausedCommandDecorator pcd;
 	while (1) 
     {		

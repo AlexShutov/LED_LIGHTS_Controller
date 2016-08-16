@@ -12,6 +12,7 @@
 #include <avr/io.h>
 #include "../src/hardware.h"
 #include "../src/hardware_drivers/Strobe.h"
+#include "../src/EEManager/EEManager.h"
 #include "../src/comm/SourceOfData.h"
 #include "../src/comm/comm_sources/UartSource.h"
 #include "../src/comm/CommandReceiver.h"
@@ -39,6 +40,8 @@ private:
 	Strobe strobeChannel;
 	CommandReceiver commandReceiver;
 	CompositeChainExecutor execChain;
+	
+	EESupport::EEManager eeManager;
 	
 	// responsible for rgb lights (there is strobes also)
 	TimeIntervalGeneration::SequencePlayer ledLightsSequencePlayer;
@@ -69,6 +72,7 @@ public:
 	Strobe* getStrobe();
 	
 	void updateManually();
+	EESupport::EEManager* getEEManager();
 	
 protected:
 private:
