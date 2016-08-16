@@ -1,4 +1,4 @@
-/`	0	-+90??* 
+/*
 * CommExecutorFacade.cpp
 *
 * Created: 6/18/2016 7:33:04 PM
@@ -10,7 +10,7 @@
 
 
 // default constructor+
-*CommExecutorFacade::CommExecutorFacade()
+CommExecutorFacade::CommExecutorFacade()
 {
 } //CommExecutorFacade
 

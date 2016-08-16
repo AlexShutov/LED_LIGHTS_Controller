@@ -21,7 +21,7 @@ protected:
 private:
 
 	CommandExecutor* execChain[MAX_NUMBER_OF_EXECS];
-	int chainLenght;
+	uint8_t chainLenght;
 
 //functions
 public:
@@ -43,6 +43,9 @@ public:
 	bool isCommandResumable();
 	bool stopCommand(uint8_t commandCode);
 	bool resumeCommand(uint8_t commandCode);
+	
+	uint8_t getNumberOfChildren();
+	CommandExecutor* getExecutorByAddingOrder(uint8_t index);
 	
 protected:
 private:

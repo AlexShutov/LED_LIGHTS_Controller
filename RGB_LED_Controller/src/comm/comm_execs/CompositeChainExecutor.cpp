@@ -85,3 +85,15 @@ bool CompositeChainExecutor::resumeCommand(uint8_t commandCode)
 	return false;
 }
 
+uint8_t CompositeChainExecutor::getNumberOfChildren()
+{
+	return chainLenght;
+}
+
+CommandExecutor* CompositeChainExecutor::getExecutorByAddingOrder(uint8_t index)
+{
+	if (index >= chainLenght){
+		return 0;
+	}
+	return execChain[index];
+}
