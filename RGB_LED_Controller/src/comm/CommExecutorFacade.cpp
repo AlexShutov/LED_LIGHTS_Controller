@@ -54,7 +54,9 @@ void CommExecutorFacade::initialize(){
 	
 	
 	/* initialize command processors for LED related commands */
-	setupLEDExecutors();	
+	setupLEDExecutors();
+	/* and finally setup EE command executor */
+	setupEECommandExectuor();
 }
 
 void CommExecutorFacade::updateManually()
@@ -112,4 +114,10 @@ void CommExecutorFacade::setupLEDExecutors()
 	//execStrobeLights.setExternalEndCallback(&commandHistory);
 	execChain.addExecutor(&execStrobeLights);
 	
+}
+
+void CommExecutorFacade::setupEECommandExectuor()
+{
+	// register EEPROM manager in EECommandExecutor
+	execEECommand.setEEManager(&eeManager);
 }

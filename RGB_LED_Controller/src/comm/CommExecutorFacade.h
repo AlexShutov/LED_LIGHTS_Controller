@@ -20,6 +20,7 @@
 #include "../src/comm/comm_execs/ExecChangeColor.h"
 #include "../src/comm/comm_execs/ColorSequenceExecutor.h"
 #include "../src/comm/comm_execs/StrobeLightsExecutor.h"
+#include "../src/comm/comm_execs/EECommandExecutor.h"
 #include "../src/timed_sequence/SequencePlayer.h"
 #include "../src/comm/PausedCommandDecorator.h"
 
@@ -59,6 +60,9 @@ private:
 	// COMMAND_STROBE_SEQUENCE
 	StrobeRelated::StrobeLightsExecutor execStrobeLights;
 	
+	// COMMAND_EE
+	EECommandExecutor execEECommand;
+	
 	// Support for the last paused command
 	PausedCommandDecorator commandHistory;
 
@@ -82,6 +86,9 @@ private:
 	void initStrobeChannel();
 	void initCommandHistorySupport();
 	void setupLEDExecutors();
+	// this is a very connected command, so its initialiation
+	// is in separate method
+	void setupEECommandExectuor();
 	
 
 }; //CommExecutorFacade

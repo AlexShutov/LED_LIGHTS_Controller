@@ -315,6 +315,12 @@
     <Compile Include="src\comm\comm_execs\CompositeChainExecutor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\comm\comm_execs\EECommandExecutor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\EECommandExecutor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\comm\comm_execs\ExecChangeColor.cpp">
       <SubType>compile</SubType>
     </Compile>
