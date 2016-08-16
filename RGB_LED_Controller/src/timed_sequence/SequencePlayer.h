@@ -11,6 +11,7 @@
 
 #include "../src/timed_pulse/TimeIntervalGenerator.h"
 #include "../src/timed_pulse/EventCallbackDecorator.h"
+#include "../src/comm/ManuallyUpdatable.h"
 
 extern "C" {
 	#include "../src/timed_pulse/TimeInterval.h"	
@@ -46,7 +47,7 @@ public:
 /* This class extend abstract class EventCallback for moving 
 /* between items of sequence
 /************************************************************************/
-class SequencePlayer : protected EventCallback
+class SequencePlayer : protected EventCallback, public ManuallyUpdatable
 {
 	
 //variables
@@ -72,6 +73,7 @@ private:
 	// call this callback if we're not in loop mode and sequence ended
 	EventCallback* pTerminationCallback;
 	
+	
 //functions
 public:
 	SequencePlayer();
@@ -87,7 +89,14 @@ public:
 	void setLoopMode(bool isLoopMode);
 	void setTerminationCallback(EventCallback* pTerminationCallback);
 	void stopPlaying();
-
+	
+	// switching between sequence items may take a while (longer than interval 
+	// between another interrupts), so here is more coarse approach - use manual update 
+	// from main loop
+	
+	virtual void updateManually();
+	
+	
 	void setupSequence(TimeInterval* pItemsDurations, 
 		uint8_t sequenceLength, 
 		bool isLoopMode);
@@ -97,12 +106,16 @@ protected:
 	virtual void onPulseEnded();
 	virtual void setPulseNo(uint8_t pulseNo);
 	
+	
+	
 private:
 	
 	// set decorators for intercepting item callbacks
 	
 	SequencePlayer( const SequencePlayer &c );
 	SequencePlayer& operator=( const SequencePlayer &c );
+	
+	void handlePulseEnd();
 
 }; //SequencePlayer
 

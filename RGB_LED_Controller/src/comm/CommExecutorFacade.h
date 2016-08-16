@@ -68,6 +68,8 @@ public:
 	
 	Strobe* getStrobe();
 	
+	void updateManually();
+	
 protected:
 private:
 	CommExecutorFacade( const CommExecutorFacade &c );

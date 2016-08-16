@@ -131,69 +131,10 @@ void whiteColor(){
 	RGB_Led::setColor(&c);
 }
 
-class RedLightEndAction : public ExternalEndCallback
-{
-public:
-	void onSequenceRestarted(uint8_t commandCode)
-	{
-		if (commandCode == COMMAND_CODE_LIGHT_SEQUENCE){
-			ok();
-		}
-	}	
-	
-	void onSequenceEnded(uint8_t commandCode)
-	{
-		if (commandCode == COMMAND_CODE_LIGHT_SEQUENCE) {
-			whiteColor();
-		}
-	}
-};
-RedLightEndAction redLightAction;
-
 
 ColorSequenceExecutor seqExec;
 StrobeLightsExecutor strobeExec;
 char buff[200];
-void testSequencePlayer(){
-	seqExec.setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
-	seqExec.setSequencePlayer(&sp);
-	seqExec.setExternalEndCallback(&redLightAction);
-	
-	CommColorHeader* pH = (CommColorHeader*) buff;
-	pH->isSmoothSwitch= true;
-	pH->numberOfLights = 3;
-	pH->repeat = false;
-	
-	CommColorSequenceRecord* pRec = (CommColorSequenceRecord*)( pH + 1);
-	pRec->pulseColor.red = 255;
-	pRec->pulseColor.green = 20;
-	pRec->pulseColor.blue = 0;
-	pRec->pulseDuration.milliseconds = 300;
-	pRec->pulseDuration.seconds = 0;
-	pRec->pulseDuration.minutes = 0;
-	pRec++;
-	pRec->pulseColor.red = 0;
-	pRec->pulseColor.green = 20;
-	pRec->pulseColor.blue = 255;
-	pRec->pulseDuration.milliseconds = 300;
-	pRec->pulseDuration.seconds = 0;
-	pRec->pulseDuration.minutes = 0;
-	pRec++;
-	pRec->pulseColor.red = 255;
-	pRec->pulseColor.green = 255;
-	pRec->pulseColor.blue = 255;
-	pRec->pulseDuration.milliseconds = 300;
-	pRec->pulseDuration.seconds = 0;
-	pRec->pulseDuration.minutes = 0;
-	
-	
-	IncomingCommand command;
-	command.setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
-	command.setDataBlockSize(sizeof(CommColorHeader) + 2 * sizeof(CommColorSequenceRecord));
-	command.setBufferPtr(buff);
-	seqExec.executeCommand(&command);
-	
-}
 
 
 void testStrobe(Strobe* pStrobe, SequencePlayer* pPlayer){
@@ -245,22 +186,23 @@ void testStrobe(Strobe* pStrobe, SequencePlayer* pPlayer){
 	strobeExec.executeCommand(&command);
 }
 
+
+
 int main(void)
 {
 	RGB_Led::init();
 	uartInit();
 	TimeIntervalGenerator::setupTimedPulse();
-	//sp.setPulseGeneratorIndex(1);
-	
-	//testSequencePlayer();
 	
 	CommExecutorFacade facade;
-	facade.initialize();
 	
+	facade.initialize();
+		
 	PausedCommandDecorator pcd;
 	while (1) 
     {		
 		facade.pollForCommand();
+		facade.updateManually();
 		//commandReceiver.receiveCommand();
     }
 }

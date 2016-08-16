@@ -21,6 +21,9 @@ void SequenceTerminateCallback::onPulseStarted(){
 
 void SequenceTerminateCallback::onPulseEnded()
 {
+	Color c;
+	Color::clear(&c);
+	RGB_Led::setColor(&c);
 }
 
 void SequenceTerminateCallback::setPulseNo(uint8_t pulseNo)
@@ -105,6 +108,9 @@ TimeInterval* ColorSequenceExecutor::getTimeInterval(uint8_t index){
 	would have old data, but new data structure. 
 */
 bool ColorSequenceExecutor::executeCommand(IncomingCommand* pCommand){
+	if (getCommandCode() != pCommand->getCommandCode()){
+		return false;
+	}
 	// this is mandatory - see comment above
 	pSequencPlayer->stopPlaying();
 	// Use this executor as TimeInterval mapper

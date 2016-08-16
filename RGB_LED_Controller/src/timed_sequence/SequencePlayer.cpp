@@ -41,6 +41,7 @@ EventCallback* SequenceItem::getAction(){
 
 // default constructor
 SequencePlayer::SequencePlayer()
+:ManuallyUpdatable()
 {
 }
 
@@ -86,6 +87,18 @@ void SequencePlayer::stopPlaying(){
 	currItemPosition = 0;
 }
 
+
+void SequencePlayer::updateManually()
+{
+	if (isManualUpdate() && isUpdateNeeded()){
+		handlePulseEnd();
+		markAsUpdated();
+	}
+}
+
+
+
+
 void SequencePlayer::setupSequence(TimeInterval* pItemsDurations, 
 			uint8_t sequenceLength,
 			bool isLoopMode){
@@ -106,11 +119,20 @@ void SequencePlayer::onPulseStarted(){
 
 /** process switching items here */
 void SequencePlayer::onPulseEnded(){
+	if (!isManualUpdate()){
+		handlePulseEnd();
+	} else {
+		markAsNotUpdated();
+	}
+}
+
+void SequencePlayer::handlePulseEnd()
+{
 	// sequence is ended
 	if (++currItemPosition >= totalItemCount){
 		if (isLooping){
 			currItemPosition = 0;
-		} else {
+			} else {
 			//stopPlaying();
 			// we're done, call terminate event here if there is any.
 			if (pTerminationCallback){
@@ -123,7 +145,7 @@ void SequencePlayer::onPulseEnded(){
 	TimeInterval* pNextItem = 0;
 	pNextItem = &pDurationOfItems[currItemPosition];
 	// set pulse index in advance
-	pulseGenerator.stopPulse(pulseIndex, false);
+	//pulseGenerator.stopPulse(pulseIndex, false);
 	
 	uniformCallback.setItemIndex(currItemPosition);
 	pulseGenerator.addPulse(pNextItem, &uniformCallback, pulseIndex, true);

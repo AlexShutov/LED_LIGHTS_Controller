@@ -1,4 +1,4 @@
-/* 
+/`	0	-+90??* 
 * CommExecutorFacade.cpp
 *
 * Created: 6/18/2016 7:33:04 PM
@@ -9,8 +9,8 @@
 #include "CommExecutorFacade.h"
 
 
-// default constructor
-CommExecutorFacade::CommExecutorFacade()
+// default constructor+
+*CommExecutorFacade::CommExecutorFacade()
 {
 } //CommExecutorFacade
 
@@ -43,16 +43,24 @@ void CommExecutorFacade::initialize(){
 	
 	// TimedPulse under index 0 generates timing pulses for RGB LED sequence 
 	ledLightsSequencePlayer.setPulseGeneratorIndex(0);
+	ledLightsSequencePlayer.setManualUpdate(true);
 	ledLightsSequencePlayer.init();
-	
+
 	// TimedPulse with index 1 - handles strobe flashes
 	strobePlayer.setPulseGeneratorIndex(1);
+	strobePlayer.setManualUpdate(true);
 	strobePlayer.init();
 	
 	
 	
 	/* initialize command processors for LED related commands */
 	setupLEDExecutors();	
+}
+
+void CommExecutorFacade::updateManually()
+{
+	strobePlayer.updateManually();
+	ledLightsSequencePlayer.updateManually();
 }
 
 Strobe* CommExecutorFacade::getStrobe()
@@ -79,6 +87,7 @@ void CommExecutorFacade::initCommandHistorySupport()
 	// 'execChain' is a composite executor - it keep all real executors.
 	commandHistory.setExecStorage(&execChain);
 	commandHistory.setDecoree(&execChain);
+	
 }
 
 void CommExecutorFacade::setupLEDExecutors()
