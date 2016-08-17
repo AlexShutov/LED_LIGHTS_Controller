@@ -19,9 +19,10 @@ EECommandExecutor::~EECommandExecutor()
 } //~EECommandExecutor
 
 
-void EECommandExecutor::setEEManager(EESupport::EEManager* pManager)
+
+void EECommandExecutor::setEEPlayer(EESupport::EEPlayer* pPlayer)
 {
-	this->pEEManager = pManager;
+	pEEPlayer = pPlayer;
 }
 
 bool EECommandExecutor::isRGBCommand()

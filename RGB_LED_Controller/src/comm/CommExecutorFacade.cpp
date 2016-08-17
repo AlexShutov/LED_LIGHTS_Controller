@@ -70,6 +70,11 @@ EESupport::EEManager* CommExecutorFacade::getEEManager()
 	return &eeManager;
 }
 
+EESupport::EEPlayer* CommExecutorFacade::getEEPlayer()
+{
+	return &eePlayer;
+}
+
 Strobe* CommExecutorFacade::getStrobe()
 {
 	return &strobeChannel;
@@ -118,6 +123,12 @@ void CommExecutorFacade::setupLEDExecutors()
 
 void CommExecutorFacade::setupEECommandExectuor()
 {
-	// register EEPROM manager in EECommandExecutor
-	execEECommand.setEEManager(&eeManager);
+	// register EEPROM memory manager in 
+	// EEPROM player.
+	eePlayer.setEEManager(&eeManager);
+	// register composite callback in EEPROM player
+	// player will execute saved commands by it
+	eePlayer.setCommandExec(&execChain);
+	// register EEPROM player in EE command executor
+	execEECommand.setEEPlayer(&eePlayer);
 }

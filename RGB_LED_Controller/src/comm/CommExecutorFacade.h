@@ -13,6 +13,7 @@
 #include "../src/hardware.h"
 #include "../src/hardware_drivers/Strobe.h"
 #include "../src/EEManager/EEManager.h"
+#include "../src/comm/comm_execs/EE/EEPlayer.h"
 #include "../src/comm/SourceOfData.h"
 #include "../src/comm/comm_sources/UartSource.h"
 #include "../src/comm/CommandReceiver.h"
@@ -43,6 +44,7 @@ private:
 	CompositeChainExecutor execChain;
 	
 	EESupport::EEManager eeManager;
+	EESupport::EEPlayer  eePlayer;
 	
 	// responsible for rgb lights (there is strobes also)
 	TimeIntervalGeneration::SequencePlayer ledLightsSequencePlayer;
@@ -77,6 +79,7 @@ public:
 	
 	void updateManually();
 	EESupport::EEManager* getEEManager();
+	EESupport::EEPlayer* getEEPlayer();
 	
 protected:
 private:

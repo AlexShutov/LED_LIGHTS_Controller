@@ -10,7 +10,7 @@
 #define __EECOMMANDEXECUTOR_H__
 
 #include "../src/comm/CommandExecutor.h"
-#include "../src/EEManager/EEManager.h"
+#include "../src/comm/comm_execs/EE/EEPlayer.h"
 
 #define COMMAND_EE 3
 
@@ -20,7 +20,8 @@ class EECommandExecutor : public CommandExecutor
 public:
 protected:
 private:
-	EESupport::EEManager* pEEManager;
+	
+	EESupport::EEPlayer*  pEEPlayer;
 
 //functions
 public:
@@ -36,7 +37,7 @@ public:
 	virtual bool executeCommand(IncomingCommand* pCommand);
 	
 	
-	void setEEManager(EESupport::EEManager* pManager);
+	void setEEPlayer(EESupport::EEPlayer* pPlayer);
 	
 protected:
 private:

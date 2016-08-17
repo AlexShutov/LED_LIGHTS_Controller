@@ -26,6 +26,7 @@
 #include "../src/comm/PausedCommandDecorator.h"
 
 #include "../src/EEManager/EEManager.h"
+#include "../src/comm/comm_execs/EE/EEPlayer.h"
 
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallbackDecorator;
@@ -97,8 +98,9 @@ int main(void)
 	facade.initialize();
 	
 	testEEProm(facade.getEEManager());
-	//testWriteEEPROM();
-	//testReadEEPROM();
+	
+	EEPlayer* pPlayer = facade.getEEPlayer();
+	
 	
 	PausedCommandDecorator pcd;
 	while (1) 
