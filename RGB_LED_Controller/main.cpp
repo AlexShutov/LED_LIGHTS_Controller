@@ -100,6 +100,9 @@ int main(void)
 	testEEProm(facade.getEEManager());
 	
 	EEPlayer* pPlayer = facade.getEEPlayer();
+	pPlayer->loadPlayerDataFromEEPROM();
+	PlayerData* pPlayerData = pPlayer->getPlayerData();
+	
 	
 	
 	PausedCommandDecorator pcd;
