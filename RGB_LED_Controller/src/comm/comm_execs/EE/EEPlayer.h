@@ -10,6 +10,8 @@
 #define __EEPLAYER_H__
 #include "../src/EEManager/EEManager.h"
 #include "../src/comm/CommandExecutor.h"
+#include "../src/comm/CommandReceiver.h"
+#include "../src/comm/IncomingCommand.h"
 
 namespace EESupport {
 // Avr's Atmega328P has 1kb of EEPROM - 10 blocks by 100bytes.
@@ -65,8 +67,15 @@ protected:
 private:
 	EEManager* pEEManager;
 	CommandExecutor* pCommandExec;
-	
+	// r/w buffer for EEPROM operation - read into it first, then
+	// execute command
+	char buffer[BLOCK_SIZE];
+	// copy command info into temporary object, because interrupt callback 
+	// may somehow corrupt it and loading from EEPROM need some command 
+	// info object
+	IncomingCommand tempCommand;
 	PlayerData playerData;
+	
 //functions
 public:
 	EEPlayer();
@@ -83,7 +92,48 @@ public:
 	void loadPlayerDataFromEEPROM();
 	void savePlayerDataToEEPROM();
 	
-
+	// wipes out all PlayerData records in memory instance
+	// call 'savePlayerDataToEEPROM()' explicitly
+	void wipeOutPlayerData();
+	
+	// return number of cells containing saved data
+	uint8_t getNumberOfCellsInUse();
+	bool isCellInUse(uint8_t cellIndex);
+	
+	// get indexes of first and last used cells 
+	uint8_t getFirstUsedCellIndex();
+	uint8_t getLastUsedCellIndex();
+	
+	// checks if player has next occupied cell
+	bool hasNextUsedCell(uint8_t currentCellIndex);
+	uint8_t getNextUsedCellIndex(uint8_t currCellIndex);
+	// the same for 'back' direction
+	bool hasPreviousUsedCell(uint8_t currentCellIndex);
+	uint8_t getPreviousUsedCellIndex(uint8_t currentCellIndex);
+	
+	/* validate value and fix if it is corrupted. It may not be
+	 initialized yet, in this case if there is at least one used cell, we select
+	 first cell as current.
+	 Another case is if current cell is set but this cell i sbeing marked as empty.
+	 Current value will become corrupted. To fix that select previous cell if there 
+	 is any used cell before, or next cell otherwise
+	 */
+	void validateCurrentCellValue();
+	
+	// tell player to take next used cell and process data from it
+	void forward();
+	// move to previous cell
+	void back();
+	// move to cell with explicit index - cell if cell is used, it
+	// get selected as current and its data gets processed
+	void moveToCell(uint8_t cellIndex);
+	
+	// process cell after it being selected
+	void loadAndProcessCell(uint8_t cellIndex);
+	// helper method, saves command data into EEPROM cell. 
+	void saveToCell(IncomingCommand* pCommand, 
+					uint8_t cellIndex,
+					uint8_t cellOffset);
 	
 	PlayerData* getPlayerData();
 	
@@ -92,14 +142,14 @@ private:
 	EEPlayer( const EEPlayer &c );
 	EEPlayer& operator=( const EEPlayer &c );
 
-	// check if validation symbols doesn't match
+	// check if validation symbols doesn't match. checking is done 
+	// only during device startup
 	bool checkIfPlayerDataCorrupted();
 	
 	// clear PlayerData in memory (without overwriting eeprom)
 	void wipOutPlayerDataLocal();
-	// wipes out all PlayerData records in memory instance
-	// call 'savePlayerDataToEEPROM()' explicitly
-	void wipeOutPlayerData();
+	
+	
 
 }; //EEPlayer
 

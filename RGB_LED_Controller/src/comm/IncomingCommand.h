@@ -47,7 +47,6 @@ public:
 protected:
 private:
 	IncomingCommand( const IncomingCommand &c );
-	IncomingCommand& operator=( const IncomingCommand &c );
 
 }; //IncomingCommand
 

@@ -97,15 +97,37 @@ int main(void)
 	
 	facade.initialize();
 	
-	testEEProm(facade.getEEManager());
+	//testEEProm(facade.getEEManager());
 	
 	EEPlayer* pPlayer = facade.getEEPlayer();
 	pPlayer->loadPlayerDataFromEEPROM();
 	PlayerData* pPlayerData = pPlayer->getPlayerData();
 	
+	pPlayerData->savedPatternsInfo[3].isInUse = true;
+	pPlayerData->savedPatternsInfo[5].isInUse = true;
+	
+	if (pPlayer->getNumberOfCellsInUse() == 2 &&
+		pPlayer->isCellInUse(3)	 &&
+		pPlayer->isCellInUse(5)){
+	} else {
+		error();
+	}
+	pPlayer->wipeOutPlayerData();
+	
+	pPlayerData->savedPatternsInfo[1].isInUse = true;
+	pPlayerData->savedPatternsInfo[3].isInUse = true;
+	pPlayerData->savedPatternsInfo[4].isInUse = true;
+	
+	pPlayerData->currentCellIndex = 6;
+	pPlayer->back();
+	if (pPlayerData->currentCellIndex == 4){
+		ok();
+	} else {
+		error();
+	}
 	
 	
-	PausedCommandDecorator pcd;
+	//pPlayer->wipeOutPlayerData();
 	while (1) 
     {		
 		facade.pollForCommand();
