@@ -89,9 +89,7 @@ public:
 	
 	void setCommandExec(CommandExecutor* pExec);
 	CommandExecutor* getCommandExec();
-	
-	void loadPlayerDataFromEEPROM();
-	void savePlayerDataToEEPROM();
+
 	
 	// wipes out all PlayerData records in memory instance
 	// call 'savePlayerDataToEEPROM()' explicitly
@@ -131,23 +129,14 @@ public:
 	
 	// process cell after it being selected
 	void loadAndProcessCell(uint8_t cellIndex);
-	// helper method, saves command data into EEPROM cell. 
-	void saveToCell(IncomingCommand* pCommand, 
-					uint8_t cellIndex,
-					uint8_t cellOffset);
-	// load command from given cell starting from offset 'cellOffset'. 
-	// We validate method arguments first - reload player state data and 
-	// check if this sell is in use. If it is - proceed further.
-	// Command is supposed to be having the same format as during saving -
-	// first comes command header (IncomingCommand) and after it comes
-	// data block. 
-	// All data is copied into internal buffer, after which data block is
-	// set in command header. If CommandExecutor is not null, it executes
-	// that command.
-	// This method differ from 'loadAndProcessSell' because it has
-	// cell offset. We can reuse it for loading two commands- 
-	// rgb and background one
-	bool loadFromCell(uint8_t cellIndex, uint8_t cellOffset);
+	
+	
+	void saveToCell(uint8_t cellIndex, 
+					bool isHavingBackgroundCommand, 
+					IncomingCommand* pRGBCommandHeader,
+					IncomingCommand* pBackgroundCommandHeader);
+	
+	
 	
 	PlayerData* getPlayerData();
 	
@@ -156,6 +145,9 @@ private:
 	EEPlayer( const EEPlayer &c );
 	EEPlayer& operator=( const EEPlayer &c );
 
+	void loadPlayerDataFromEEPROM();
+	void savePlayerDataToEEPROM();
+
 	// check if validation symbols doesn't match. checking is done 
 	// only during device startup
 	bool checkIfPlayerDataCorrupted();
@@ -163,6 +155,23 @@ private:
 	// clear PlayerData in memory (without overwriting eeprom)
 	void wipOutPlayerDataLocal();
 	
+	// helper method, saves command data into EEPROM cell.
+	void saveToCellInner(IncomingCommand* pCommand,
+	uint8_t cellIndex,
+	uint8_t cellOffset);
+	// load command from given cell starting from offset 'cellOffset'.
+	// We validate method arguments first - reload player state data and
+	// check if this sell is in use. If it is - proceed further.
+	// Command is supposed to be having the same format as during saving -
+	// first comes command header (IncomingCommand) and after it comes
+	// data block.
+	// All data is copied into internal buffer, after which data block is
+	// set in command header. If CommandExecutor is not null, it executes
+	// that command.
+	// This method differ from 'loadAndProcessSell' because it has
+	// cell offset. We can reuse it for loading two commands-
+	// rgb and background one
+	bool loadFromCellInner(uint8_t cellIndex, uint8_t cellOffset);
 	
 
 }; //EEPlayer

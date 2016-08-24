@@ -360,16 +360,7 @@ void EEPlayer::moveToCell(uint8_t cellIndex)
 }
 
 
-void EEPlayer::loadAndProcessCell(uint8_t cellIndex)
-{
-	if (!pCommandExec){
-		return;
-	}
-	loadFromCell(cellIndex, 0);
-
-}
-
-void EEPlayer::saveToCell(IncomingCommand* pCommand, 
+void EEPlayer::saveToCellInner(IncomingCommand* pCommand, 
 						  uint8_t cellIndex,
 						  uint8_t cellOffset)
 {
@@ -396,7 +387,7 @@ void EEPlayer::saveToCell(IncomingCommand* pCommand,
 	savePlayerDataToEEPROM();
 }
 
-bool EEPlayer::loadFromCell(uint8_t cellIndex, uint8_t cellOffset)
+bool EEPlayer::loadFromCellInner(uint8_t cellIndex, uint8_t cellOffset)
 {
 	// refresh player state and
 	// validate data
@@ -424,4 +415,60 @@ bool EEPlayer::loadFromCell(uint8_t cellIndex, uint8_t cellOffset)
 	// handle command by executor - it know what to do
 	pCommandExec->executeCommand(pCommand);
 	return true;
+}
+
+void EEPlayer::saveToCell(uint8_t cellIndex, 
+						  bool isHavingBackgroundCommand, 
+						  IncomingCommand* pRGBCommandHeader, 
+						  IncomingCommand* pBackgroundCommandHeader)
+{
+	if (cellIndex >= NUMBER_OF_MEMORY_CELL) return;
+	// cell cell state (if it has background command in it)
+	playerData.savedPatternsInfo[cellIndex].isHavingBackgroundCommand = 
+		isHavingBackgroundCommand;
+	// save foreground (RGB) command first
+	saveToCellInner(pRGBCommandHeader, cellIndex, 0);
+	if (!isHavingBackgroundCommand) {
+		// we're done here
+		return;
+	}
+	// calculate number of bytes in foreground command so we 
+	// will know what index to write background command from
+	uint8_t rgbCommSize = sizeof(IncomingCommand) + 
+		pRGBCommandHeader->getDataBlockSize();
+	
+	// check if there is enough space for both commands
+	uint8_t totalSize = rgbCommSize + sizeof(IncomingCommand) +
+		pBackgroundCommandHeader->getDataBlockSize();
+	if (totalSize >= BLOCK_SIZE){
+		// ignore background command because we need more
+		// space for fitting both commands
+		playerData.savedPatternsInfo[cellIndex].
+			backgroundBlockBegin = false;
+		savePlayerDataToEEPROM();
+		return;
+	}
+	
+	// save background command data begin (offset from block start)
+	// into command data, it will be saved during saving 
+	// command data
+	playerData.savedPatternsInfo[cellIndex].backgroundBlockBegin = rgbCommSize;
+	// index start from 0, write background command starting 
+	// from 'rgbCommandSize' index
+	saveToCellInner(pBackgroundCommandHeader, cellIndex, rgbCommSize);
+}
+
+
+void EEPlayer::loadAndProcessCell(uint8_t cellIndex)
+{
+	if (!pCommandExec){
+		return;
+	}
+	loadFromCellInner(cellIndex, 0);
+	if (!playerData.savedPatternsInfo[cellIndex].isHavingBackgroundCommand) {
+		// we' re done, return
+		return;
+	}
+	uint8_t offset = playerData.savedPatternsInfo[cellIndex].backgroundBlockBegin;
+	loadFromCellInner(cellIndex, offset);
 }

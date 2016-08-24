@@ -70,21 +70,8 @@ void whiteColor(){
 #define EE_OFFSET 100
 
 
-
-void testEEProm(EEManager* eeManager)
-{
-	Color c;
-	Color::clear(&c);
-	c.red = 245;
-	c.green = 0;
-	c.blue = 10;
-	
-	//eeManager->writeData(1, 10, &c, sizeof(Color));
-	Color::clear(&c);
-	
-	eeManager->readData(1, 10, &c, sizeof(Color));
-	RGB_Led::setColor(&c);
-}
+char blinkBuffer[100];
+IncomingCommand* pBlingCommand;
 
 char buff[200];
 IncomingCommand cmd;
@@ -109,7 +96,8 @@ void testSavingCommandToEEColor(CommExecutorFacade* pFacade,
 	*/
 	*pColor = *pC;
 	// save command with player (it will play that command after)
-	pPlayer->saveToCell(pCommand, cellNo, cellOffset);
+	//pPlayer->saveToCell(pCommand, cellNo, cellOffset);
+	pPlayer->saveToCell(cellNo, true, pCommand, pBlingCommand);
 }
 
 void testSavingCommandToEESequence(CommExecutorFacade* pFacade, 
@@ -147,15 +135,34 @@ void testSavingCommandToEESequence(CommExecutorFacade* pFacade,
 	pCommand->setDataBlockSize(size);
 	
 	// save command with player (it will play that command after)
-	pPlayer->saveToCell(pCommand, cellNo, cellOffset);
+	//pPlayer->saveToCell(pCommand, cellNo, cellOffset);
+	pPlayer->saveToCell(cellNo, false, pCommand, 0);
 }
 
-void testLoadingCommandFromEE(CommExecutorFacade* pFacade,
-							  uint8_t cellNo,
-							  uint8_t cellOffset){
-	EEPlayer* pPlayer = pFacade->getEEPlayer();
-	pPlayer->loadFromCell(cellNo, cellOffset);
+
+void initBlinkData(bool isON){
+	pBlingCommand = (IncomingCommand*) blinkBuffer;
+	pBlingCommand->setCommandCode(COMMAND_STROBE_SEQUENCE);
+	char* pDataBlock = (char*) (pBlingCommand + 1);
+	pBlingCommand->setBufferPtr(pDataBlock);
+	CommandStrobesDataHeader* pHeader = (CommandStrobesDataHeader*) pDataBlock;
+	pHeader->isItPermanent = false;
+	pHeader->isON = isON;
+	pHeader->numberOfFlashes = 1;
+	pHeader->repeat = true;
+	
+	pBlingCommand->setDataBlockSize(sizeof(CommandStrobesDataHeader) + 
+		 sizeof(CommandStrobesDataRecord));
+	CommandStrobesDataRecord* pRec = (CommandStrobesDataRecord*)(pHeader + 1);
+	pRec->flashDuration.milliseconds = 50;
+	pRec->flashDuration.seconds = 0;
+	pRec->flashDuration.minutes = 0;
+	pRec->pauseDuration.milliseconds = 50;
+	pRec->pauseDuration.seconds = 0;
+	pRec->pauseDuration.minutes = 0;
+	
 }
+
 Color c;
 int main(void)
 {
@@ -167,67 +174,47 @@ int main(void)
 	
 	facade.initialize();
 	
-	//testEEProm(facade.getEEManager());
-	/*
+	
 	EEPlayer* pPlayer = facade.getEEPlayer();
-	pPlayer->loadPlayerDataFromEEPROM();
-	PlayerData* pPlayerData = pPlayer->getPlayerData();
-	
-	pPlayerData->savedPatternsInfo[3].isInUse = true;
-	pPlayerData->savedPatternsInfo[5].isInUse = true;
-	
-	if (pPlayer->getNumberOfCellsInUse() == 2 &&
-		pPlayer->isCellInUse(3)	 &&
-		pPlayer->isCellInUse(5)){
-	} else {
-		error();
-	}
+	/*
 	pPlayer->wipeOutPlayerData();
 	
-	pPlayerData->savedPatternsInfo[1].isInUse = true;
-	pPlayerData->savedPatternsInfo[3].isInUse = true;
-	pPlayerData->savedPatternsInfo[4].isInUse = true;
-	
-	pPlayerData->currentCellIndex = 6;
-	pPlayer->back();
-	if (pPlayerData->currentCellIndex == 4){
-		ok();
-	} else {
-		error();
-	}
-	*/
-	EEPlayer* pPlayer = facade.getEEPlayer();
-	pPlayer->wipeOutPlayerData();
-	/*
-	testSavingCommandToEEColor(&facade, 0, 0);
-	testSavingCommandToEESequence(&facade, 1, 0);
-	*/
 	Color::clear(&c);
 	c.red = 255;
+	initBlinkData(true);
 	testSavingCommandToEEColor(&facade, &c, 0, 0);
 	Color::clear(&c);
 	c.green = 255;
+	initBlinkData(false);
 	testSavingCommandToEEColor(&facade, &c, 1, 0);
 	Color::clear(&c);
 	c.blue = 255;
+	initBlinkData(true);
 	testSavingCommandToEEColor(&facade, &c,  2, 0);
 	Color::clear(&c);
 	c.red = 255;
 	c.blue = 255;
+	initBlinkData(false);
 	testSavingCommandToEEColor(&facade, &c, 3, 0);
 	Color::clear(&c);
 	c.red = 255;
 	c.green = 255;
 	c.blue = 255;
+	initBlinkData(true);
 	testSavingCommandToEEColor(&facade, &c, 4, 0);
 	
 	testSavingCommandToEESequence(&facade, 5, 0);
-	
+	*/
+	/*
 	pPlayer->moveToCell(0);
 	pPlayer->back();
 	pPlayer->forward();
 	pPlayer->back();
-	
+	*/
+	//pPlayer->forward();
+	pPlayer->moveToCell(1);
+	pPlayer->moveToCell(5);
+	//pPlayer->forward();
 	
 	
 	//pPlayer->wipeOutPlayerData();
