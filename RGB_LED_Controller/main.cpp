@@ -175,9 +175,10 @@ void testEECommand(CommExecutorFacade* pFacade){
 	pCommand->setCommandCode(COMMAND_EE);
 	pCommand->setDataBlockSize(sizeof(EECommandData));
 	EECommandData* pData = (EECommandData*) (pCommand + 1);
-
+	pCommand->setBufferPtr((char*) pData);
+	
 	pData->isLoadCommand = true;
-	pData->cellIndex = 3;
+	pData->cellIndex = 2;
 	pData->hasBackgroundCommand = false;
 	
 	pExec->executeCommand(pCommand);	
@@ -196,7 +197,7 @@ int main(void)
 	
 	
 	EEPlayer* pPlayer = facade.getEEPlayer();
-	/*
+	
 	pPlayer->wipeOutPlayerData();
 	
 	Color::clear(&c);
@@ -224,7 +225,7 @@ int main(void)
 	testSavingCommandToEEColor(&facade, &c, 4, 0);
 	
 	testSavingCommandToEESequence(&facade, 5, 0, true);
-	*/
+	
 	/*
 	pPlayer->moveToCell(0);
 	pPlayer->back();

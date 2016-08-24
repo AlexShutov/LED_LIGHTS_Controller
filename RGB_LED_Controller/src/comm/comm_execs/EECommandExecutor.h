@@ -17,12 +17,15 @@ namespace EESupport {
 #define COMMAND_EE 3
 
 typedef struct {
-	// indicates whether save or load 
-	// from EEPROM
-	bool isLoadCommand;
 	// ee storage's cell index executor
 	// has to use
 	uint8_t cellIndex;
+	// indicates whether save or load 
+	// from EEPROM
+	bool isLoadCommand;
+	// if command isn't inload mode, this flag will
+	// tell executor to mark cell as not used
+	bool eraseCell;
 	// the next fields responsible for 
 	// saving data
 	// if data block has background command also
@@ -61,7 +64,7 @@ protected:
 private:
 	EECommandExecutor( const EECommandExecutor &c );
 	EECommandExecutor& operator=( const EECommandExecutor &c );
-
+	
 }; //EECommandExecutor
 
 }

@@ -458,6 +458,16 @@ void EEPlayer::saveToCell(uint8_t cellIndex,
 	saveToCellInner(pBackgroundCommandHeader, cellIndex, rgbCommSize);
 }
 
+void EEPlayer::markCellAsUnused(uint8_t cellIndex)
+{
+	if (cellIndex >= NUMBER_OF_MEMORY_CELL) return;
+	playerData.savedPatternsInfo[cellIndex].isInUse = false;
+	playerData.savedPatternsInfo[cellIndex].backgroundBlockBegin = 0;
+	playerData.savedPatternsInfo[cellIndex].isHavingBackgroundCommand = false;
+	// update data in EEPROM
+	savePlayerDataToEEPROM();
+}
+
 
 void EEPlayer::loadAndProcessCell(uint8_t cellIndex)
 {

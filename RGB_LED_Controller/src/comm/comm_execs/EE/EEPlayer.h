@@ -137,7 +137,7 @@ public:
 					IncomingCommand* pBackgroundCommandHeader);
 	
 	
-	
+	void markCellAsUnused(uint8_t cellIndex);
 	PlayerData* getPlayerData();
 	
 protected:

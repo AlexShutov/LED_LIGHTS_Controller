@@ -49,11 +49,22 @@ bool EECommandExecutor::resumeCommand(uint8_t commandCode)
 
 bool EECommandExecutor::executeCommand(IncomingCommand* pCommand)
 {
-	Color c;
-	c.red = 200;
-	c.green=  40;
-	c.blue = 255;
-	RGB_Led::setColor(&c);
+	// get command header, it comes first in data block
+	EECommandData* pCommHeader = 
+		(EECommandData*) pCommand->getBufferPtr();
+	
+	if (pCommHeader->isLoadCommand){
+	// tell player to load command from specific cell
+		pEEPlayer->loadAndProcessCell(pCommHeader->cellIndex);
+		return true;
+	}
+	// if we here, command is in 'save' mode
+	if (pCommHeader->eraseCell){
+		// mark cell as unused, actual command data remains
+		// intact, only ee header gets overwritten
+		pEEPlayer->markCellAsUnused(pCommHeader->cellIndex);
+		return true;
+	}
 	return true;
 }
 
