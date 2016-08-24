@@ -63,7 +63,7 @@ private:
 	StrobeRelated::StrobeLightsExecutor execStrobeLights;
 	
 	// COMMAND_EE
-	EECommandExecutor execEECommand;
+	EESupport::EECommandExecutor execEECommand;
 	
 	// Support for the last paused command
 	PausedCommandDecorator commandHistory;
@@ -80,6 +80,7 @@ public:
 	void updateManually();
 	EESupport::EEManager* getEEManager();
 	EESupport::EEPlayer* getEEPlayer();
+	CommandExecutor* getExec();
 	
 protected:
 private:

@@ -12,7 +12,25 @@
 #include "../src/comm/CommandExecutor.h"
 #include "../src/comm/comm_execs/EE/EEPlayer.h"
 
+namespace EESupport {
+
 #define COMMAND_EE 3
+
+typedef struct {
+	// indicates whether save or load 
+	// from EEPROM
+	bool isLoadCommand;
+	// ee storage's cell index executor
+	// has to use
+	uint8_t cellIndex;
+	// the next fields responsible for 
+	// saving data
+	// if data block has background command also
+	bool hasBackgroundCommand;
+	// we can calculate background command offset
+	//uint8_t backgroundCommBlockBeginPos;
+	
+} EECommandData;
 
 class EECommandExecutor : public CommandExecutor
 {
@@ -21,7 +39,7 @@ public:
 protected:
 private:
 	
-	EESupport::EEPlayer*  pEEPlayer;
+	EEPlayer*  pEEPlayer;
 
 //functions
 public:
@@ -46,4 +64,5 @@ private:
 
 }; //EECommandExecutor
 
+}
 #endif //__EECOMMANDEXECUTOR_H__

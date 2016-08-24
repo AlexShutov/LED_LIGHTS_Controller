@@ -102,7 +102,8 @@ void testSavingCommandToEEColor(CommExecutorFacade* pFacade,
 
 void testSavingCommandToEESequence(CommExecutorFacade* pFacade, 
 								   uint8_t cellNo,
-								   uint8_t cellOffset){
+								   uint8_t cellOffset,
+								   bool writeToEE){
 	EEPlayer* pPlayer = pFacade->getEEPlayer();
 	// allocate command header at buffer start
 	IncomingCommand* pCommand = (IncomingCommand*) buff;
@@ -136,7 +137,9 @@ void testSavingCommandToEESequence(CommExecutorFacade* pFacade,
 	
 	// save command with player (it will play that command after)
 	//pPlayer->saveToCell(pCommand, cellNo, cellOffset);
-	pPlayer->saveToCell(cellNo, false, pCommand, 0);
+	if (writeToEE){
+		pPlayer->saveToCell(cellNo, false, pCommand, 0);
+	}
 }
 
 
@@ -161,6 +164,23 @@ void initBlinkData(bool isON){
 	pRec->pauseDuration.seconds = 0;
 	pRec->pauseDuration.minutes = 0;
 	
+}
+
+void testEECommand(CommExecutorFacade* pFacade){
+	
+	// executor with history support
+	CommandExecutor* pExec = pFacade->getExec();
+	// test loading command from EEPROM
+	IncomingCommand* pCommand = (IncomingCommand*) buff;
+	pCommand->setCommandCode(COMMAND_EE);
+	pCommand->setDataBlockSize(sizeof(EECommandData));
+	EECommandData* pData = (EECommandData*) (pCommand + 1);
+
+	pData->isLoadCommand = true;
+	pData->cellIndex = 3;
+	pData->hasBackgroundCommand = false;
+	
+	pExec->executeCommand(pCommand);	
 }
 
 Color c;
@@ -203,7 +223,7 @@ int main(void)
 	initBlinkData(true);
 	testSavingCommandToEEColor(&facade, &c, 4, 0);
 	
-	testSavingCommandToEESequence(&facade, 5, 0);
+	testSavingCommandToEESequence(&facade, 5, 0, true);
 	*/
 	/*
 	pPlayer->moveToCell(0);
@@ -212,10 +232,10 @@ int main(void)
 	pPlayer->back();
 	*/
 	//pPlayer->forward();
-	pPlayer->moveToCell(1);
-	pPlayer->moveToCell(5);
+	//pPlayer->moveToCell(1);
+	//pPlayer->moveToCell(5);
 	//pPlayer->forward();
-	
+	testEECommand(&facade);
 	
 	//pPlayer->wipeOutPlayerData();
 	while (1) 

@@ -7,6 +7,8 @@
 
 
 #include "EECommandExecutor.h"
+#include "../src/hardware_drivers/RGB_Led.h"
+using namespace EESupport;
 
 // default constructor
 EECommandExecutor::EECommandExecutor()
@@ -20,7 +22,7 @@ EECommandExecutor::~EECommandExecutor()
 
 
 
-void EECommandExecutor::setEEPlayer(EESupport::EEPlayer* pPlayer)
+void EECommandExecutor::setEEPlayer(EEPlayer* pPlayer)
 {
 	pEEPlayer = pPlayer;
 }
@@ -47,6 +49,11 @@ bool EECommandExecutor::resumeCommand(uint8_t commandCode)
 
 bool EECommandExecutor::executeCommand(IncomingCommand* pCommand)
 {
+	Color c;
+	c.red = 200;
+	c.green=  40;
+	c.blue = 255;
+	RGB_Led::setColor(&c);
 	return true;
 }
 

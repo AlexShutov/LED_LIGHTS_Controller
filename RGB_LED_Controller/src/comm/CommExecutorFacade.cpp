@@ -75,6 +75,11 @@ EESupport::EEPlayer* CommExecutorFacade::getEEPlayer()
 	return &eePlayer;
 }
 
+CommandExecutor* CommExecutorFacade::getExec()
+{
+	return &commandHistory;
+}
+
 Strobe* CommExecutorFacade::getStrobe()
 {
 	return &strobeChannel;
@@ -131,6 +136,13 @@ void CommExecutorFacade::setupEECommandExectuor()
 	eePlayer.setCommandExec(&commandHistory);
 	// load data from EEPROM, called when all fields set
 	eePlayer.init();
+	// setup EECommandExecutor- it tells EEPlayer to
+	// load command from cell or save command into it
+	execEECommand.setCommandCode(COMMAND_EE);
 	// register EEPROM player in EE command executor
 	execEECommand.setEEPlayer(&eePlayer);
+	// add ee command executor into execution chain
+	// ee command is background command, so we don't
+	// need to register it in command history manager
+	execChain.addExecutor(&execEECommand);
 }
