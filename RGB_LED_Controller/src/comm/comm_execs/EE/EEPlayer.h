@@ -138,6 +138,11 @@ public:
 	
 	
 	void markCellAsUnused(uint8_t cellIndex);
+	
+	// cell can be marked as current one in data section, but 
+	// this command can be not activated yet (used during device boot)
+	void reloadCurrentCell();
+	
 	PlayerData* getPlayerData();
 	
 protected:

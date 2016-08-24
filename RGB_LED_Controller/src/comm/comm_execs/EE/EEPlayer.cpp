@@ -414,6 +414,10 @@ bool EEPlayer::loadFromCellInner(uint8_t cellIndex, uint8_t cellOffset)
 	pCommand->setBufferPtr(pDataBlock);
 	// handle command by executor - it know what to do
 	pCommandExec->executeCommand(pCommand);
+	// update current cell index as
+	playerData.currentCellIndex = cellIndex;
+	// and save updated index into EEPROM (the rest of data remains intact)
+	savePlayerDataToEEPROM();
 	return true;
 }
 
@@ -481,4 +485,10 @@ void EEPlayer::loadAndProcessCell(uint8_t cellIndex)
 	}
 	uint8_t offset = playerData.savedPatternsInfo[cellIndex].backgroundBlockBegin;
 	loadFromCellInner(cellIndex, offset);
+}
+
+void EEPlayer::reloadCurrentCell()
+{
+	validateCurrentCellValue();
+	loadAndProcessCell(playerData.currentCellIndex);
 }

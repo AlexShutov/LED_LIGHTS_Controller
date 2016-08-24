@@ -39,7 +39,7 @@
  * anything below 57600 on an 8MHz clock. It does work at up to 250000 baud
  * but you may experience a small amount of dropped packets at that speed.
  */
-#define UART_BAUD_RATE 57600
+#define UART_BAUD_RATE 9600
 
 // define register and pins to which RGB Led is connected to
 #define LED_REGISTER_DIRECT  &DDRB

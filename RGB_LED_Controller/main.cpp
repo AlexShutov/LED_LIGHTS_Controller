@@ -143,14 +143,14 @@ void testSavingCommandToEESequence(CommExecutorFacade* pFacade,
 }
 
 
-void initBlinkData(bool isON){
+void initBlinkData(bool isOn){
 	pBlingCommand = (IncomingCommand*) blinkBuffer;
 	pBlingCommand->setCommandCode(COMMAND_STROBE_SEQUENCE);
 	char* pDataBlock = (char*) (pBlingCommand + 1);
 	pBlingCommand->setBufferPtr(pDataBlock);
 	CommandStrobesDataHeader* pHeader = (CommandStrobesDataHeader*) pDataBlock;
 	pHeader->isItPermanent = false;
-	pHeader->isON = isON;
+	pHeader->isON = isOn;
 	pHeader->numberOfFlashes = 1;
 	pHeader->repeat = true;
 	
@@ -178,7 +178,7 @@ void testEECommand(CommExecutorFacade* pFacade){
 	pCommand->setBufferPtr((char*) pData);
 	
 	pData->isLoadCommand = true;
-	pData->cellIndex = 2;
+	pData->cellIndex = 5;
 	pData->hasBackgroundCommand = false;
 	
 	pExec->executeCommand(pCommand);	
@@ -197,9 +197,8 @@ int main(void)
 	
 	
 	EEPlayer* pPlayer = facade.getEEPlayer();
-	
+	/*
 	pPlayer->wipeOutPlayerData();
-	
 	Color::clear(&c);
 	c.red = 255;
 	initBlinkData(true);
@@ -225,7 +224,7 @@ int main(void)
 	testSavingCommandToEEColor(&facade, &c, 4, 0);
 	
 	testSavingCommandToEESequence(&facade, 5, 0, true);
-	
+	*/
 	/*
 	pPlayer->moveToCell(0);
 	pPlayer->back();
@@ -236,7 +235,9 @@ int main(void)
 	//pPlayer->moveToCell(1);
 	//pPlayer->moveToCell(5);
 	//pPlayer->forward();
-	testEECommand(&facade);
+	//testEECommand(&facade);
+	
+	facade.getEEPlayer()->reloadCurrentCell();
 	
 	//pPlayer->wipeOutPlayerData();
 	while (1) 
