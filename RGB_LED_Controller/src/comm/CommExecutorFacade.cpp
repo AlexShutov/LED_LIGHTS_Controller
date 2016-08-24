@@ -128,7 +128,7 @@ void CommExecutorFacade::setupEECommandExectuor()
 	eePlayer.setEEManager(&eeManager);
 	// register composite callback in EEPROM player
 	// player will execute saved commands by it
-	eePlayer.setCommandExec(&execChain);
+	eePlayer.setCommandExec(&commandHistory);
 	// load data from EEPROM, called when all fields set
 	eePlayer.init();
 	// register EEPROM player in EE command executor

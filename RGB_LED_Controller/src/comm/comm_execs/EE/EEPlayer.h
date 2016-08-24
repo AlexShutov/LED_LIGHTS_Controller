@@ -12,6 +12,7 @@
 #include "../src/comm/CommandExecutor.h"
 #include "../src/comm/CommandReceiver.h"
 #include "../src/comm/IncomingCommand.h"
+#include "../src/hardware_drivers/RGB_Led.h"
 
 namespace EESupport {
 // Avr's Atmega328P has 1kb of EEPROM - 10 blocks by 100bytes.
@@ -73,8 +74,8 @@ private:
 	// copy command info into temporary object, because interrupt callback 
 	// may somehow corrupt it and loading from EEPROM need some command 
 	// info object
-	IncomingCommand tempCommand;
 	PlayerData playerData;
+	
 	
 //functions
 public:
@@ -134,6 +135,19 @@ public:
 	void saveToCell(IncomingCommand* pCommand, 
 					uint8_t cellIndex,
 					uint8_t cellOffset);
+	// load command from given cell starting from offset 'cellOffset'. 
+	// We validate method arguments first - reload player state data and 
+	// check if this sell is in use. If it is - proceed further.
+	// Command is supposed to be having the same format as during saving -
+	// first comes command header (IncomingCommand) and after it comes
+	// data block. 
+	// All data is copied into internal buffer, after which data block is
+	// set in command header. If CommandExecutor is not null, it executes
+	// that command.
+	// This method differ from 'loadAndProcessSell' because it has
+	// cell offset. We can reuse it for loading two commands- 
+	// rgb and background one
+	bool loadFromCell(uint8_t cellIndex, uint8_t cellOffset);
 	
 	PlayerData* getPlayerData();
 	

@@ -48,10 +48,10 @@ void EEManager::readData(uint8_t blockIndex,
 
 void EEManager::writeBlock(uint8_t blockIndex, char* pSrc)
 {
-	
+	writeData(blockIndex, 0, pSrc, BLOCK_SIZE);
 }
 
 void EEManager::readBlock(uint8_t blockIndex, char* pDst)
 {
-	
+	readData(blockIndex, 0, (void*) pDst, BLOCK_SIZE);
 }

@@ -86,7 +86,77 @@ void testEEProm(EEManager* eeManager)
 	RGB_Led::setColor(&c);
 }
 
+char buff[200];
+IncomingCommand cmd;
+void testSavingCommandToEEColor(CommExecutorFacade* pFacade, 
+								Color* pC,
+								uint8_t cellNo,
+								uint8_t cellOffset){
+	EEPlayer* pPlayer = pFacade->getEEPlayer();
+	// allocate command header at buffer start
+	IncomingCommand* pCommand = (IncomingCommand*) buff;
+	pCommand->setCommandCode(COMMAND_CODE_CHANGE_COLOR);
+	pCommand->setDataBlockSize(sizeof(Color));
+	// write data block right after command header
+	char* pDataPtr = (char*)(pCommand + 1);
+	pCommand->setBufferPtr(pDataPtr);
+	// set color
+	Color* pColor = (Color*) pDataPtr;
+	/*
+	pColor->red = 255;
+	pColor->green = 255;
+	pColor->blue = 0;
+	*/
+	*pColor = *pC;
+	// save command with player (it will play that command after)
+	pPlayer->saveToCell(pCommand, cellNo, cellOffset);
+}
 
+void testSavingCommandToEESequence(CommExecutorFacade* pFacade, 
+								   uint8_t cellNo,
+								   uint8_t cellOffset){
+	EEPlayer* pPlayer = pFacade->getEEPlayer();
+	// allocate command header at buffer start
+	IncomingCommand* pCommand = (IncomingCommand*) buff;
+	pCommand->setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
+//	pCommand->setDataBlockSize(sizeof(Color));
+	// write data block right after command header
+	char* pDataPtr = (char*)(pCommand + 1);
+	pCommand->setBufferPtr(pDataPtr);
+	// form data
+	// fill in command header
+	CommColorHeader* pHead = (CommColorHeader*) pDataPtr;
+	pHead->isSmoothSwitch = false;
+	pHead->numberOfLights = 2;
+	pHead->repeat = true;
+	CommColorSequenceRecord* pRec = (CommColorSequenceRecord*) (pHead + 1);
+	Color::clear(&pRec->pulseColor);
+	pRec->pulseColor.red = 255;
+	pRec->pulseDuration.milliseconds = 100;
+	pRec->pulseDuration.minutes = 0;
+	pRec->pulseDuration.seconds = 0;
+	// move to the next color
+	pRec++;
+	Color::clear(&pRec->pulseColor);
+	pRec->pulseColor.blue =255;
+	pRec->pulseDuration.milliseconds = 100;
+	pRec->pulseDuration.seconds = 0;
+	pRec->pulseDuration.minutes = 0;
+	
+	uint8_t size = sizeof(CommColorHeader) + 2 * sizeof(CommColorSequenceRecord);
+	pCommand->setDataBlockSize(size);
+	
+	// save command with player (it will play that command after)
+	pPlayer->saveToCell(pCommand, cellNo, cellOffset);
+}
+
+void testLoadingCommandFromEE(CommExecutorFacade* pFacade,
+							  uint8_t cellNo,
+							  uint8_t cellOffset){
+	EEPlayer* pPlayer = pFacade->getEEPlayer();
+	pPlayer->loadFromCell(cellNo, cellOffset);
+}
+Color c;
 int main(void)
 {
 	RGB_Led::init();
@@ -98,7 +168,7 @@ int main(void)
 	facade.initialize();
 	
 	//testEEProm(facade.getEEManager());
-	
+	/*
 	EEPlayer* pPlayer = facade.getEEPlayer();
 	pPlayer->loadPlayerDataFromEEPROM();
 	PlayerData* pPlayerData = pPlayer->getPlayerData();
@@ -125,6 +195,39 @@ int main(void)
 	} else {
 		error();
 	}
+	*/
+	EEPlayer* pPlayer = facade.getEEPlayer();
+	pPlayer->wipeOutPlayerData();
+	/*
+	testSavingCommandToEEColor(&facade, 0, 0);
+	testSavingCommandToEESequence(&facade, 1, 0);
+	*/
+	Color::clear(&c);
+	c.red = 255;
+	testSavingCommandToEEColor(&facade, &c, 0, 0);
+	Color::clear(&c);
+	c.green = 255;
+	testSavingCommandToEEColor(&facade, &c, 1, 0);
+	Color::clear(&c);
+	c.blue = 255;
+	testSavingCommandToEEColor(&facade, &c,  2, 0);
+	Color::clear(&c);
+	c.red = 255;
+	c.blue = 255;
+	testSavingCommandToEEColor(&facade, &c, 3, 0);
+	Color::clear(&c);
+	c.red = 255;
+	c.green = 255;
+	c.blue = 255;
+	testSavingCommandToEEColor(&facade, &c, 4, 0);
+	
+	testSavingCommandToEESequence(&facade, 5, 0);
+	
+	pPlayer->moveToCell(0);
+	pPlayer->back();
+	pPlayer->forward();
+	pPlayer->back();
+	
 	
 	
 	//pPlayer->wipeOutPlayerData();

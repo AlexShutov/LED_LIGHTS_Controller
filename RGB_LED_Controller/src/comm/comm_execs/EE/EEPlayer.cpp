@@ -260,6 +260,14 @@ void EEPlayer::validateCurrentCellValue()
 	}
 }
 
+void showError(){
+	Color c;
+	c.red = 255;
+	c.green = 0;
+	c.blue= 255;
+	RGB_Led::setColor(&c);
+}
+
 void EEPlayer::forward()
 {
 	bool wasInvalide = false;
@@ -307,6 +315,7 @@ void EEPlayer::back()
 		validateCurrentCellValue();
 	}
 	uint8_t numberOfUsedCells = getNumberOfCellsInUse();
+	
 	if (numberOfUsedCells == 0){
 		return;
 	}
@@ -356,7 +365,7 @@ void EEPlayer::loadAndProcessCell(uint8_t cellIndex)
 	if (!pCommandExec){
 		return;
 	}
-	pEEManager->readBlock(cellIndex, buffer);
+	loadFromCell(cellIndex, 0);
 
 }
 
@@ -365,27 +374,54 @@ void EEPlayer::saveToCell(IncomingCommand* pCommand,
 						  uint8_t cellOffset)
 {
 	if (!pCommand) return;
-	tempCommand = *pCommand;
-	// save command header into buffer first
-	CommandHeader* pBuffHeader = (CommandHeader*) buffer ;
-	// fill in command header
-	pBuffHeader->commandCode = tempCommand.getCommandCode();
-	pBuffHeader->dataSize = tempCommand.getDataBlockSize();
-	pBuffHeader->newLineSymbol = '\n';
-	pBuffHeader->trailingSymbol = '!';
-	void* pDataBuff = pBuffHeader + 1;
-	// copy data from command into internal buffer
-	memcpy(pDataBuff, tempCommand.getBufferPtr(), 
-		tempCommand.getDataBlockSize());
-	// now we have entire command data in our buffer,
+	
+	// copy command data into internal buffer
+	IncomingCommand* pSavedCommHeader = (IncomingCommand*) buffer;
+	*pSavedCommHeader = *pCommand;
+	void* pDataBuffer = (pSavedCommHeader + 1);
+	// copy command data from command into internal buffer
+	memcpy(pDataBuffer, pSavedCommHeader->getBufferPtr(), 
+		   pSavedCommHeader->getDataBlockSize());
+	// now we have entire command data in our buffer (with command header first)
 	// save it to EEPROM
-	// we save command to eeprom with offset 'cellOffset'. It is
+	// we save command to EEPROM with offset 'cellOffset'. It is
 	// necessary if when you want to save two commands to one cell
-	pEEManager->writeData(cellIndex, cellOffset, pBuffHeader,
-			tempCommand.getDataBlockSize() + sizeof(CommandHeader));
+	
+	pEEManager->writeData(cellIndex, cellOffset, buffer, 
+		sizeof(IncomingCommand) + pSavedCommHeader->getDataBlockSize());
 	// mark this cell as active
 	playerData.savedPatternsInfo[cellIndex].isInUse = true;
 	// save player header (it updates values, not rewrites -
-	// safe for eeprom)
+	// safe for EEPROM)
 	savePlayerDataToEEPROM();
+}
+
+bool EEPlayer::loadFromCell(uint8_t cellIndex, uint8_t cellOffset)
+{
+	// refresh player state and
+	// validate data
+	if (cellIndex >= NUMBER_OF_MEMORY_CELL || 
+		!playerData.savedPatternsInfo[cellIndex].isInUse){
+			return false;
+	}
+	// check if executor is set, no point in continuing 
+	// without it
+	if (!pCommandExec){
+		return false;
+	}
+	// We need to know data block size, so copy 
+	// load command header from EEPROM first
+	pEEManager->readData(cellIndex, cellOffset, buffer, sizeof(IncomingCommand));
+	IncomingCommand* pCommand = (IncomingCommand*) buffer;
+	char* pDataBlock = (char*) (pCommand + 1);
+	// copy the rest of data from EEPROM, starting from byte next to
+	// command header
+	pEEManager->readData(cellIndex, cellOffset + sizeof(IncomingCommand), 
+		pDataBlock, pCommand->getDataBlockSize());
+	// All command data is now in memory buffer; set pointer to 
+	// data block in command header so executor can read command data
+	pCommand->setBufferPtr(pDataBlock);
+	// handle command by executor - it know what to do
+	pCommandExec->executeCommand(pCommand);
+	return true;
 }
