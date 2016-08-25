@@ -10,6 +10,7 @@
 #define __EEPLAYER_H__
 #include "../src/EEManager/EEManager.h"
 #include "../src/comm/CommandExecutor.h"
+#include "../src/comm/comm_execs/CompositeChainExecutor.h"
 #include "../src/comm/CommandReceiver.h"
 #include "../src/comm/IncomingCommand.h"
 #include "../src/hardware_drivers/RGB_Led.h"
@@ -67,7 +68,10 @@ public:
 protected:
 private:
 	EEManager* pEEManager;
+	// major command executor (with history support)
 	CommandExecutor* pCommandExec;
+	// is needed for stopping background commands
+	CompositeChainExecutor* pExecChain;
 	// r/w buffer for EEPROM operation - read into it first, then
 	// execute command
 	char buffer[BLOCK_SIZE];
@@ -90,6 +94,8 @@ public:
 	void setCommandExec(CommandExecutor* pExec);
 	CommandExecutor* getCommandExec();
 
+	void setExecChain(CompositeChainExecutor* pExecChain);
+	CompositeChainExecutor* getExecChain();
 	
 	// wipes out all PlayerData records in memory instance
 	// call 'savePlayerDataToEEPROM()' explicitly
@@ -177,7 +183,10 @@ private:
 	// cell offset. We can reuse it for loading two commands-
 	// rgb and background one
 	bool loadFromCellInner(uint8_t cellIndex, uint8_t cellOffset);
-	
+	// In case if memory cell has no background command saved, we need to 
+	// stop background commands (strobe flashes). For that we have a 
+	// reference to strobe executor
+	void stopBackgroundCommands();
 
 }; //EEPlayer
 

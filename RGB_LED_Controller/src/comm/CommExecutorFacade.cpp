@@ -134,6 +134,11 @@ void CommExecutorFacade::setupEECommandExectuor()
 	// register composite callback in EEPROM player
 	// player will execute saved commands by it
 	eePlayer.setCommandExec(&commandHistory);
+	// set composite executor - player can stop all 
+	// background commands if memory cell has no
+	// saved background command. Player will ignore this
+	// action if chain not set
+	eePlayer.setExecChain(&execChain);
 	// load data from EEPROM, called when all fields set
 	eePlayer.init();
 	// setup EECommandExecutor- it tells EEPlayer to

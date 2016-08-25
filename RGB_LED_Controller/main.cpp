@@ -27,6 +27,7 @@
 
 #include "../src/EEManager/EEManager.h"
 #include "../src/comm/comm_execs/EE/EEPlayer.h"
+#include "../src/comm/comm_execs/EECommandExecutor.h"
 
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using TimeIntervalGeneration::EventCallbackDecorator;
@@ -184,6 +185,89 @@ void testEECommand(CommExecutorFacade* pFacade){
 	pExec->executeCommand(pCommand);	
 }
 
+void testSavingCommandExec(CommExecutorFacade* pFacade){
+	CommandExecutor* pExec = pFacade->getExec();
+	IncomingCommand* pSaveCmd = (IncomingCommand*) buff;
+	char* dataBlock = (char*) (pSaveCmd + 1);
+	pSaveCmd->setCommandCode(COMMAND_EE);
+	pSaveCmd->setBufferPtr(dataBlock);
+	// set command size in the end
+	EECommandData* pEECommData = (EECommandData*) dataBlock;
+	pEECommData->cellIndex = 0;
+	pEECommData->eraseCell = false;
+	pEECommData->isLoadCommand = false;
+	// test 'true' case later on
+	pEECommData->hasBackgroundCommand = true;
+	char* pData = (char*)(pEECommData + 1);
+	
+	// write 'change color' command
+	IncomingCommand* pChangeColorCmd = (IncomingCommand*) pData;
+	pChangeColorCmd->setCommandCode(COMMAND_CODE_CHANGE_COLOR);
+	pChangeColorCmd->setDataBlockSize(sizeof(Color));
+	char* pChangeColorData = (char*) (pChangeColorCmd + 1);
+	pChangeColorCmd->setBufferPtr(pChangeColorData);
+	Color* pColor = (Color*) pChangeColorData;
+	// set Color
+	pColor->red = 245;
+	pColor->green = 245;
+	pColor->blue = 22;
+	uint8_t firstSize = sizeof(IncomingCommand) + sizeof(Color);
+	
+	// test if 'change color' command formed correctly
+	//pExec->executeCommand(pChangeColorCmd);
+	// it work, command formed correctly
+	//pExec->executeCommand(pSaveCmd);
+	
+	// create another command- will be saved as background command
+	// for that use strobe command
+	
+	IncomingCommand* pBckgCmd = (IncomingCommand*)(pColor + 1);
+	pBckgCmd->setCommandCode(COMMAND_STROBE_SEQUENCE);
+	char* pDataBlock = (char*) (pBckgCmd + 1);
+	pBckgCmd->setBufferPtr(pDataBlock);
+	CommandStrobesDataHeader* pHeader = (CommandStrobesDataHeader*) pDataBlock;
+	pHeader->isItPermanent = false;
+	pHeader->isON = false;
+	pHeader->numberOfFlashes = 3;
+	pHeader->repeat = true;
+	
+	CommandStrobesDataRecord* pRec = (CommandStrobesDataRecord*)(pHeader + 1);
+	pRec->flashDuration.milliseconds = 50;
+	pRec->flashDuration.seconds = 0;
+	pRec->flashDuration.minutes = 0;
+	pRec->pauseDuration.milliseconds = 50;
+	pRec->pauseDuration.seconds = 0;
+	pRec->pauseDuration.minutes = 0;
+	pRec++;
+	
+	pRec->flashDuration.milliseconds = 70;
+	pRec->flashDuration.seconds = 0;
+	pRec->flashDuration.minutes = 0;
+	pRec->pauseDuration.milliseconds = 70;
+	pRec->pauseDuration.seconds = 0;
+	pRec->pauseDuration.minutes = 0;
+	pRec++;
+	
+	pRec->flashDuration.milliseconds = 150;
+	pRec->flashDuration.seconds = 0;
+	pRec->flashDuration.minutes = 0;
+	pRec->pauseDuration.milliseconds = 0;
+	pRec->pauseDuration.seconds = 1;
+	pRec->pauseDuration.minutes = 0;
+	pRec++;
+	
+	pBckgCmd->setDataBlockSize(sizeof(CommandStrobesDataHeader) + 
+		3 * sizeof(CommandStrobesDataRecord));
+		
+	uint8_t secondSize = sizeof(IncomingCommand) + sizeof(CommandStrobesDataHeader) + 
+		3 * sizeof(CommandStrobesDataRecord);
+	
+	// set total size of 'save' command
+	pSaveCmd->setDataBlockSize(sizeof(EECommandData) + firstSize + secondSize);
+	//pExec->executeCommand(pBckgCmd);
+	pExec->executeCommand(pSaveCmd);
+}
+
 Color c;
 int main(void)
 {
@@ -225,8 +309,11 @@ int main(void)
 	
 	testSavingCommandToEESequence(&facade, 5, 0, true);
 	*/
-	/*
+	//testSavingCommandExec(&facade);
 	pPlayer->moveToCell(0);
+	//pPlayer->moveToCell(5);
+	
+	/*
 	pPlayer->back();
 	pPlayer->forward();
 	pPlayer->back();
@@ -236,9 +323,7 @@ int main(void)
 	//pPlayer->moveToCell(5);
 	//pPlayer->forward();
 	//testEECommand(&facade);
-	
-	facade.getEEPlayer()->reloadCurrentCell();
-	
+	//facade.getEEPlayer()->reloadCurrentCell();
 	//pPlayer->wipeOutPlayerData();
 	while (1) 
     {		

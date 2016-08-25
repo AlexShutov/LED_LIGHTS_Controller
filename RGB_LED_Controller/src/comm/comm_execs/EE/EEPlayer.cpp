@@ -15,6 +15,8 @@ using namespace EESupport;
 // default constructor
 EEPlayer::EEPlayer()
 {
+	pExecChain = 0;
+	pCommandExec = 0;
 } //EEPlayer
 
 // default destructor
@@ -42,6 +44,15 @@ CommandExecutor* EEPlayer::getCommandExec()
 	return pCommandExec;
 }
 
+void EEPlayer::setExecChain(CompositeChainExecutor* pExecChain){
+	this->pExecChain = pExecChain;
+}
+
+CompositeChainExecutor* EEPlayer::getExecChain()
+{
+	return pExecChain;
+}
+
 PlayerData* EEPlayer::getPlayerData()
 {
 	return &playerData;
@@ -49,6 +60,7 @@ PlayerData* EEPlayer::getPlayerData()
 
 void EEPlayer::init()
 {
+	
 	loadPlayerDataFromEEPROM();
 	if (checkIfPlayerDataCorrupted()){
 		// remove all data locally and from EEPROM as well
@@ -421,6 +433,25 @@ bool EEPlayer::loadFromCellInner(uint8_t cellIndex, uint8_t cellOffset)
 	return true;
 }
 
+void EEPlayer::stopBackgroundCommands()
+{
+	if (!pExecChain){
+		// exec chain isn't set, user forgot to set it or he or she
+		// doesn't want background executor to be cancelled
+		return;
+	}
+	uint8_t execCnt = pExecChain->getNumberOfChildren();
+	for (uint8_t i = 0; i < execCnt; ++i){
+		CommandExecutor* pCurrExec = pExecChain->getExecutorByAddingOrder(i);
+		// we need only background (not rbg) executors
+		if (pCurrExec->isRGBCommand()){
+			continue;
+		}
+		// this is exec for background command, stop it.
+		pCurrExec->stopCommand(pCurrExec->getCommandCode());
+	}
+}
+
 void EEPlayer::saveToCell(uint8_t cellIndex, 
 						  bool isHavingBackgroundCommand, 
 						  IncomingCommand* pRGBCommandHeader, 
@@ -480,6 +511,9 @@ void EEPlayer::loadAndProcessCell(uint8_t cellIndex)
 	}
 	loadFromCellInner(cellIndex, 0);
 	if (!playerData.savedPatternsInfo[cellIndex].isHavingBackgroundCommand) {
+		// there is no background command, device must stop playing any background
+		// sequence it plays now
+		stopBackgroundCommands();
 		// we' re done, return
 		return;
 	}

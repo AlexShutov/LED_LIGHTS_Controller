@@ -65,6 +65,32 @@ bool EECommandExecutor::executeCommand(IncomingCommand* pCommand)
 		pEEPlayer->markCellAsUnused(pCommHeader->cellIndex);
 		return true;
 	}
+	// save command to EEPROM (RGB, or first command)
+	// command header comes right after EECommandData in data buffer
+	IncomingCommand* pCmd = (IncomingCommand*)(pCommHeader + 1);
+	// data section is after command header (Incoming command)
+	char* pData = (char*) (pCmd + 1);
+	// just for making sure everything is ok
+	pCmd->setBufferPtr(pData);
+	uint8_t commDataSize = pCmd->getDataBlockSize();
+	// left 0 if there is no background command
+	IncomingCommand* pSecondCmd = 0;
+	char* pSecondData = 0;
+	if (pCommHeader->hasBackgroundCommand){
+		// get pointer to background command header
+		pSecondCmd = (IncomingCommand*)( pData + commDataSize);
+		pSecondData = (char*)(pSecondCmd + 1);
+		// just to make sure
+		pSecondCmd->setBufferPtr(pSecondData);
+	}
+	// check cell index
+	uint8_t cellIndex = pCommHeader->cellIndex;
+	if (cellIndex >= NUMBER_OF_MEMORY_CELL){
+		cellIndex = NUMBER_OF_MEMORY_CELL - 1;
+	}
+	// save commands into EEPROM by using EEPlayer
+	pEEPlayer->saveToCell(cellIndex, pCommHeader->hasBackgroundCommand,
+		pCmd, pSecondCmd);
 	return true;
 }
 
