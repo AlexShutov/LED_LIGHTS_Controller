@@ -30,14 +30,14 @@ public:
 	// figure out if this entity has to be updated manually 
 	// (from main loop)
 	bool isManualUpdate();
-	
+	bool isUpdateNeeded();	
 
 	
 protected:
 	// called from within derived class for marking entity as needed update
 	void markAsNotUpdated();
 	void markAsUpdated();
-	bool isUpdateNeeded();
+
 private:
 	ManuallyUpdatable( const ManuallyUpdatable &c );
 	ManuallyUpdatable& operator=( const ManuallyUpdatable &c );

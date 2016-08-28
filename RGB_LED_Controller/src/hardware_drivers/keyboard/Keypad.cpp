@@ -12,10 +12,16 @@
 #include "../src/hardware.h"
 #include "Keypad.h"
 
+#include "../src/hardware_drivers/RGB_Led.h"
+
+Keypad* Keypad::sInstance;
 
 // default constructor
 Keypad::Keypad()
 {
+	sInstance = this;
+	// use 'stopped' state by default
+	setPlaybackState(false);
 } //Keypad
 
 // default destructor
@@ -27,7 +33,6 @@ void Keypad::initialize()
 {
 	initializeButtons();
 	bringUpKeyboardTimer();
-	sInstance = this;
 }
 
 void Keypad::initializeButtons()
@@ -51,7 +56,7 @@ void Keypad::initializeButtons()
 	btnback.setDirRegister(KEY_BACK_DIRECT_REGISTER);
 	btnback.setPortRegister(KEY_BACK_PORT_REGISTER);
 	btnback.setPinRegister(KEY_BACK_PIN_REGISTER);
-	btnback.setKeyPinNo(KEY_FORWARD_PIN);
+	btnback.setKeyPinNo(KEY_BACK_PIN);
 	#ifdef KEY_BACK_HIGH_LEVEL_ON
 	btnback.setIsHightStateOn(true);
 	#else
@@ -64,6 +69,35 @@ void Keypad::initializeButtons()
 	btnback.initDirectionDegister();
 }
 
+void Keypad::setPlaybackState(bool isPlaying)
+{
+	isNowPlaying = isPlaying;
+}
+
+void Keypad::updateManually()
+{
+	bool updateNeeded = btnback.isUpdateNeeded() ||
+		btnForward.isUpdateNeeded();
+	if (!updateNeeded){
+		return;
+	}
+	// clear state change flags
+	btnBackChanged = false;
+	btnForwardChanged = false;
+	// poll buttons, callback will update flags above
+	// if needed
+	btnback.updateManually();
+	btnForward.updateManually();
+	if (btnBackChanged || btnForwardChanged){
+		processNewData();
+	}
+}
+
+void Keypad::checkStateFromInterrupt()
+{
+	btnback.checkStateFromInterrupt();
+	btnForward.checkStateFromInterrupt();	
+}
 
 /*
  Keyboard (forward and back buttons use separate timer for updated. I did that,
@@ -90,17 +124,90 @@ void Keypad::bringUpKeyboardTimer(){
 	sei(); // Enable global interrupts
 }
 
+
+/* check state of buttons and mark those as not
+   updated if needed
+*/
+ISR(TIMER2_COMPA_vect)
+{
+	Keypad* pKeypad = Keypad::sInstance;
+	if (pKeypad){
+		pKeypad->checkStateFromInterrupt();
+	}
+}
+
 void Keypad::setCallback(KeypadCallback* pKeypadCallback)
 {
 	pCallback = pKeypadCallback;
 }
 
-void Keypad::updateManually()
-{
-	
-}
+
 
 void Keypad::onPressStateChanged(uint8_t buttonId, bool isPressed)
 {
-	
+	// mark state of corresponding buttons as changed
+	switch (buttonId){
+		case KEY_BACK:
+			btnBackChanged = true;
+			break;
+		case KEY_FORWARD:
+			btnForwardChanged = true;
+			break;
+		default:
+		return;
+	}
 }
+
+
+void Keypad::processNewData()
+{
+	Color::clear(&color);
+	if (btnBackChanged || btnForwardChanged){
+		if (btnback.isButtonPressed() && btnForward.isButtonPressed()){
+			// two buttons is pressed, investigate it further
+			hadleTwoButtonsPress();
+			return;	
+		}
+	}
+	// we cannot ignore event if both buttons is presed, because
+	// internal state depends on it. If only one button is pressed,
+	// we can ignore it
+	if (!pCallback){
+		// nothing to inform
+		return;	
+	}
+	// we need to track release of both buttons - 
+	// this happens if we'here but none of callback
+	// method is called
+	if (btnBackChanged){
+		if (btnback.isButtonPressed())
+			// 'back' button pressed
+			pCallback->onBackButton(true);
+		else
+			// 'back' button released
+			pCallback->onBackButton(false);
+	}else
+	if (btnForwardChanged){
+		if (btnForward.isButtonPressed())
+			pCallback->onForwardButton(true);
+		else
+			pCallback->onForwardButton(false);
+	}
+}
+
+void Keypad::hadleTwoButtonsPress()
+{
+	if (isNowPlaying){
+		// turn off
+		isNowPlaying = false;
+		if (pCallback){
+			pCallback->onStopButtonPressed();
+		}
+	} else {
+		isNowPlaying = true;
+		if (pCallback){
+			pCallback->onStartButtonPressed();
+		}
+	}
+}
+

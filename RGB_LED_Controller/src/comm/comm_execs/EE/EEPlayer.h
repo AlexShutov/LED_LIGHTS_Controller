@@ -145,6 +145,11 @@ public:
 	
 	void markCellAsUnused(uint8_t cellIndex);
 	
+	// In case if memory cell has no background command saved, we need to
+	// stop background commands (strobe flashes). For that we have a
+	// reference to strobe executor
+	void stopBackgroundCommands();
+	
 	// cell can be marked as current one in data section, but 
 	// this command can be not activated yet (used during device boot)
 	void reloadCurrentCell();
@@ -183,10 +188,6 @@ private:
 	// cell offset. We can reuse it for loading two commands-
 	// rgb and background one
 	bool loadFromCellInner(uint8_t cellIndex, uint8_t cellOffset);
-	// In case if memory cell has no background command saved, we need to 
-	// stop background commands (strobe flashes). For that we have a 
-	// reference to strobe executor
-	void stopBackgroundCommands();
 
 }; //EEPlayer
 
