@@ -23,20 +23,6 @@ extern "C" {
 	#include "../src/include/uart_stuff.h"
 };
 
-Color c;
-void ok(){
-	Color::clear(&c);
-	c.green = 255;
-	RGB_Led::setColor(&c);
-}
-
-void error(){
-	Color::clear(&c);
-	c.red = 255;
-	RGB_Led::setColor(&c);
-}
-
-char buff[20];
 int main(void)
 {
 	// initialize hardware drivers
@@ -47,21 +33,14 @@ int main(void)
 	// pattern description in GOF)
 	CommExecutorFacade facade;
 	facade.initialize();
-	facade.loadDefaultSequences();
-	// reload command saved as current in EEPROM
-	//facade.getEEPlayer()->reloadCurrentCell();
-	// turn it off for now - until 'Presets' executor not ready
+	// turn on device - this will load preset
+	// sequences EEPROM is empty and select 
+	// current sequence (or the first one if presets 
+	// were loaded)
 	facade.turnOn();
-	
-	
-	
-	
-	while (1) 
-    {		
-			
+	while (1) {					
 		facade.pollForCommand();
 		facade.updateManually();
-		
 	}
 }
 

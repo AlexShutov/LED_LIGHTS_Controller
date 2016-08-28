@@ -123,6 +123,14 @@ void CommExecutorFacade::initKeypad()
 
 void CommExecutorFacade::turnOn()
 {
+	// check if device has at least one saved sequence -
+	// we need something to show after device intialization
+	if (getEEPlayer()->getNumberOfCellsInUse() == 0){
+		// there is no saved sequences, load
+		// presets
+		loadDefaultSequences();
+	}
+	// load data cell marked as current
 	getEEPlayer()->reloadCurrentCell();
 	keypad.setPlaybackState(true);
 }

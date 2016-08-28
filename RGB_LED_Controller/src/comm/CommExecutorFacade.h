@@ -93,13 +93,13 @@ public:
 	void turnOn();
 	void turnOff();
 	
-	void loadDefaultSequences();
 	
+	EESupport::EEPlayer* getEEPlayer();
 protected:
 	CommandExecutor* getExec();
 	Strobe* getStrobe();
 	EESupport::EEManager* getEEManager();
-	EESupport::EEPlayer* getEEPlayer();
+	
 	
 private:
 	CommExecutorFacade( const CommExecutorFacade &c );
@@ -113,7 +113,8 @@ private:
 	// is in separate method
 	void setupPresetExec();
 	void setupEECommandExectuor();
-	
+	// laod preset sequences
+	void loadDefaultSequences();
 
 }; //CommExecutorFacade
 
