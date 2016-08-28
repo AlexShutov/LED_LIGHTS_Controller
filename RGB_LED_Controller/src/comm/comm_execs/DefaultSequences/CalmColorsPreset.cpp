@@ -156,5 +156,6 @@ char* CalmColorsPreset::writeRGBSequence(char* buffBeg, uint8_t* pSizeDst)
 
 bool CalmColorsPreset::writeStrobeSequence(char* buffBeg)
 {
-		
+	
+	
 }
