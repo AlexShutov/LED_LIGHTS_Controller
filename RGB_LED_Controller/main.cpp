@@ -47,13 +47,14 @@ int main(void)
 	// pattern description in GOF)
 	CommExecutorFacade facade;
 	facade.initialize();
+	facade.loadDefaultSequences();
 	// reload command saved as current in EEPROM
 	//facade.getEEPlayer()->reloadCurrentCell();
 	// turn it off for now - until 'Presets' executor not ready
 	facade.turnOn();
 	
 	
-	facade.testPresetExec();
+	
 	
 	while (1) 
     {		

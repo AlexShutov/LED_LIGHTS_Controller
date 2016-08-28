@@ -80,7 +80,6 @@ private:
 	// presses keypad button
 	PlayerKeypadCallback keypadCallback;
 
-	char buff[20];
 
 //functions
 public:
@@ -94,7 +93,7 @@ public:
 	void turnOn();
 	void turnOff();
 	
-	void testPresetExec();
+	void loadDefaultSequences();
 	
 protected:
 	CommandExecutor* getExec();

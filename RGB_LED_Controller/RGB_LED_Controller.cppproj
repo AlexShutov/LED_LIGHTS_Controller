@@ -328,6 +328,12 @@
     <Compile Include="src\comm\comm_execs\CompositeChainExecutor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\BlackAndWhitePreset.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\BlackAndWhitePreset.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\comm\comm_execs\DefaultSequences\CalmColorsPreset.cpp">
       <SubType>compile</SubType>
     </Compile>

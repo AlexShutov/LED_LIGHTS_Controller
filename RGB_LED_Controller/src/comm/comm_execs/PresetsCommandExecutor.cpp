@@ -13,6 +13,7 @@
 #include "../src/comm/comm_execs/DefaultSequences/CalmColorsPreset.h"
 #include "../src/comm/comm_execs/DefaultSequences/SingleColorAndStrobePreset.h"
 #include "../src/comm/comm_execs/DefaultSequences/PolicePreset.h"
+#include "../src/comm/comm_execs/DefaultSequences/BlackAndWhitePreset.h"
 
 using namespace LedCommandExecutors;
 using namespace EESupport;
@@ -136,6 +137,13 @@ bool PresetsCommandExecutor::restoreSequenceInCell(uint8_t cellIndex, char* comm
 			break;
 		}
 		case 2: {
+			// Black and white preset
+			BlackAndWhitePreset preset;
+			preset.setEEPlayer(pPlayer);
+			preset.restoreSequenceInCell(cellIndex, commandBuffer);
+			break;
+		}
+		case 3: {
 			// light yellow color
 			SingleColorAndStrobePreset preset;
 			preset.setEEPlayer(pPlayer);
@@ -148,6 +156,7 @@ bool PresetsCommandExecutor::restoreSequenceInCell(uint8_t cellIndex, char* comm
 			preset.restoreSequenceInCell(cellIndex, commandBuffer);
 			break;
 		}
+	
 		default:
 			break;
 	}

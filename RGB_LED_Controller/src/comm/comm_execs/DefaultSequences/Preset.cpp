@@ -37,7 +37,6 @@ bool Preset::restoreSequenceInCell(uint8_t cellIndex, char* commandBuffer)
 		hasSecondCommand = writeStrobeSequence(secondCommBegin);
 	}
 	
-	
 	pPlayer->saveToCell(cellIndex, hasSecondCommand,
 		(IncomingCommand*) commandBuffer, 
 		hasStrobe() ? (IncomingCommand*) secondCommBegin : 0);

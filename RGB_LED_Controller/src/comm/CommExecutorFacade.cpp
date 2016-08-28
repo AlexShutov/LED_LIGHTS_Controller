@@ -193,8 +193,9 @@ void CommExecutorFacade::setupPresetExec()
 }
 
 
-void CommExecutorFacade::testPresetExec()
+void CommExecutorFacade::loadDefaultSequences()
 {
+	char buff[20];
 	PresetDataStructure* pPresetsData = (PresetDataStructure*) buff;
 	presetExecutor.setCommandCode(COMMAND_RESTORE_PRESETS);
 	
