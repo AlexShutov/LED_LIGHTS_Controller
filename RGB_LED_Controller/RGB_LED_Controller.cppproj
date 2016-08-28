@@ -346,6 +346,12 @@
     <Compile Include="src\comm\comm_execs\ExecChangeColor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\comm\comm_execs\PresetsCommandExecutor.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\PresetsCommandExecutor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\comm\comm_execs\StrobeLightsExecutor.cpp">
       <SubType>compile</SubType>
     </Compile>

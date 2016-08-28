@@ -12,6 +12,7 @@
 #include "../src/hardware_drivers/RGB_Led.h"
 #include "../src/comm/CommandExecutor.h"
 
+#include "../src/hardware_drivers/RGB_Led.h"
 
 namespace LedCommandExecutors {
 

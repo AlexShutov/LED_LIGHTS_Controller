@@ -22,6 +22,7 @@
 #include "../src/comm/comm_execs/ColorSequenceExecutor.h"
 #include "../src/comm/comm_execs/StrobeLightsExecutor.h"
 #include "../src/comm/comm_execs/EECommandExecutor.h"
+#include "../src/comm/comm_execs/PresetsCommandExecutor.h"
 #include "../src/timed_sequence/SequencePlayer.h"
 #include "../src/comm/PausedCommandDecorator.h"
 #include "../src/hardware_drivers/keyboard/Keypad.h"
@@ -66,6 +67,9 @@ private:
 	// COMMAND_EE
 	EESupport::EECommandExecutor execEECommand;
 	
+	// COMMAND_RESTORE_PRESETS
+	LedCommandExecutors::PresetsCommandExecutor presetExecutor;
+	
 	// Support for the last paused command
 	PausedCommandDecorator commandHistory;
 	
@@ -75,6 +79,8 @@ private:
 	// callback, calling methods of EEPlayer whenever user
 	// presses keypad button
 	PlayerKeypadCallback keypadCallback;
+
+	char buff[20];
 
 //functions
 public:
@@ -88,11 +94,14 @@ public:
 	void turnOn();
 	void turnOff();
 	
+	void testPresetExec();
+	
 protected:
 	CommandExecutor* getExec();
 	Strobe* getStrobe();
 	EESupport::EEManager* getEEManager();
 	EESupport::EEPlayer* getEEPlayer();
+	
 private:
 	CommExecutorFacade( const CommExecutorFacade &c );
 	CommExecutorFacade& operator=( const CommExecutorFacade &c );
@@ -103,6 +112,7 @@ private:
 	void setupLEDExecutors();
 	// this is a very connected command, so its initialiation
 	// is in separate method
+	void setupPresetExec();
 	void setupEECommandExectuor();
 	
 

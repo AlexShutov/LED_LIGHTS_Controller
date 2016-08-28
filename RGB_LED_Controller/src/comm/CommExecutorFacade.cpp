@@ -7,7 +7,7 @@
 
 
 #include "CommExecutorFacade.h"
-
+using namespace LedCommandExecutors;
 
 // default constructor+
 CommExecutorFacade::CommExecutorFacade()
@@ -58,6 +58,11 @@ void CommExecutorFacade::initialize(){
 	setupLEDExecutors();
 	/* and finally setup EE command executor */
 	setupEECommandExectuor();
+	// and, finally, setup executor, which can restore default
+	// 'factory' :) light sequences in EEPROM. This call has to be
+	// the last one, becayse EECommandExecutor initializes EEPlayer and
+	// PresetsExecutor use EEPlayer for modifying data in EEPROM
+	setupPresetExec();
 }
 
 void CommExecutorFacade::updateManually()
@@ -147,6 +152,7 @@ void CommExecutorFacade::setupLEDExecutors()
 	
 }
 
+
 void CommExecutorFacade::setupEECommandExectuor()
 {
 	// register EEPROM memory manager in 
@@ -171,4 +177,36 @@ void CommExecutorFacade::setupEECommandExectuor()
 	// ee command is background command, so we don't
 	// need to register it in command history manager
 	execChain.addExecutor(&execEECommand);
+}
+
+
+void CommExecutorFacade::setupPresetExec()
+{
+	presetExecutor.setCommandCode(COMMAND_RESTORE_PRESETS);
+	presetExecutor.setEEPlayer(&eePlayer);
+	
+	// set executors for testing
+	presetExecutor.setExecChangeColor(&execChangeColor);
+	presetExecutor.setColorSequenceExec(&execLightSequence);
+	presetExecutor.setStrobeExec(&execStrobeLights);
+	
+}
+
+
+void CommExecutorFacade::testPresetExec()
+{
+	PresetDataStructure* pPresetsData = (PresetDataStructure*) buff;
+	presetExecutor.setCommandCode(COMMAND_RESTORE_PRESETS);
+	
+	IncomingCommand command;
+	command.setCommandCode(COMMAND_RESTORE_PRESETS);
+	command.setBufferPtr(buff);
+	command.setDataBlockSize(sizeof(PresetDataStructure));
+	
+	// tell executor to wipe out all data
+	pPresetsData->wipeOutEEPROM = true;
+	pPresetsData->restoreDefaults = true;
+	// execute command
+	presetExecutor.executeCommand(&command);
+	
 }

@@ -14,8 +14,10 @@
 
 #include "../src/hardware_drivers/RGB_Led.h"
 
+
 using TimeIntervalGeneration::TimeIntervalGenerator;
 using namespace TimeIntervalGeneration;
+using namespace LedCommandExecutors;
 
 extern "C" {
 	#include "../src/include/uart_stuff.h"
@@ -34,7 +36,7 @@ void error(){
 	RGB_Led::setColor(&c);
 }
 
-
+char buff[20];
 int main(void)
 {
 	// initialize hardware drivers
@@ -47,14 +49,22 @@ int main(void)
 	facade.initialize();
 	// reload command saved as current in EEPROM
 	//facade.getEEPlayer()->reloadCurrentCell();
+	// turn it off for now - until 'Presets' executor not ready
 	facade.turnOn();
+	
+	Color c;
+	c.red = 255;
+	c.green = 255;
+	c.blue = 255;
+	RGB_Led::setColor(&c);
+	
+	//facade.testPresetExec();
 	
 	while (1) 
     {		
 			
 		facade.pollForCommand();
 		facade.updateManually();
-		
 		
 	}
 }
