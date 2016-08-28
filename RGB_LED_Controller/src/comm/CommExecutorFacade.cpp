@@ -24,6 +24,7 @@ void CommExecutorFacade::pollForCommand(){
 }
 
 void CommExecutorFacade::initialize(){
+	initKeypad();
 	// initialize strobe channel
 	initStrobeChannel();
 	
@@ -63,6 +64,8 @@ void CommExecutorFacade::updateManually()
 {
 	strobePlayer.updateManually();
 	ledLightsSequencePlayer.updateManually();
+	// keypad use manual update with interrupts also
+	keypad.updateManually();
 }
 
 EESupport::EEManager* CommExecutorFacade::getEEManager()
@@ -103,8 +106,26 @@ void CommExecutorFacade::initCommandHistorySupport()
 {
 	// 'execChain' is a composite executor - it keep all real executors.
 	commandHistory.setExecStorage(&execChain);
-	commandHistory.setDecoree(&execChain);
-	
+	commandHistory.setDecoree(&execChain);	
+}
+
+void CommExecutorFacade::initKeypad()
+{
+	keypadCallback.setPlayer(getEEPlayer());
+	keypad.setCallback(&keypadCallback);
+	keypad.initialize();
+}
+
+void CommExecutorFacade::turnOn()
+{
+	getEEPlayer()->reloadCurrentCell();
+	keypad.setPlaybackState(true);
+}
+
+void CommExecutorFacade::turnOff()
+{
+	getEEPlayer()->stopBackgroundCommands();
+	keypad.setPlaybackState(false);
 }
 
 void CommExecutorFacade::setupLEDExecutors()

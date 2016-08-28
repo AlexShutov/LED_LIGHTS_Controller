@@ -24,7 +24,8 @@
 #include "../src/comm/comm_execs/EECommandExecutor.h"
 #include "../src/timed_sequence/SequencePlayer.h"
 #include "../src/comm/PausedCommandDecorator.h"
-
+#include "../src/hardware_drivers/keyboard/Keypad.h"
+#include "../src/PlayerKeypadCallback.h"
 
 
 /************************************************************************/
@@ -67,6 +68,13 @@ private:
 	
 	// Support for the last paused command
 	PausedCommandDecorator commandHistory;
+	
+	// KeypadSupport
+	// keypad driver
+	Keypad keypad;
+	// callback, calling methods of EEPlayer whenever user
+	// presses keypad button
+	PlayerKeypadCallback keypadCallback;
 
 //functions
 public:
@@ -75,20 +83,23 @@ public:
 	void pollForCommand();
 	void initialize();
 	
-	Strobe* getStrobe();
-	
 	void updateManually();
-	EESupport::EEManager* getEEManager();
-	EESupport::EEPlayer* getEEPlayer();
-	CommandExecutor* getExec();
+	
+	void turnOn();
+	void turnOff();
 	
 protected:
+	CommandExecutor* getExec();
+	Strobe* getStrobe();
+	EESupport::EEManager* getEEManager();
+	EESupport::EEPlayer* getEEPlayer();
 private:
 	CommExecutorFacade( const CommExecutorFacade &c );
 	CommExecutorFacade& operator=( const CommExecutorFacade &c );
 	/* Initialize strobe channel */
 	void initStrobeChannel();
 	void initCommandHistorySupport();
+	void initKeypad();
 	void setupLEDExecutors();
 	// this is a very connected command, so its initialiation
 	// is in separate method

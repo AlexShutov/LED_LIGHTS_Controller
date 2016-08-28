@@ -388,6 +388,12 @@
     <Compile Include="src\EEManager\EEManager.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\PlayerKeypadCallback.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\PlayerKeypadCallback.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\hardware.h">
       <SubType>compile</SubType>
     </Compile>
