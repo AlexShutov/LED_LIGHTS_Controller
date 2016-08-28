@@ -11,6 +11,8 @@
 
 #include "../src/comm/comm_execs/DefaultSequences/Preset.h"
 #include "../src/comm/comm_execs/DefaultSequences/CalmColorsPreset.h"
+#include "../src/comm/comm_execs/DefaultSequences/SingleColorAndStrobePreset.h"
+#include "../src/comm/comm_execs/DefaultSequences/PolicePreset.h"
 
 using namespace LedCommandExecutors;
 using namespace EESupport;
@@ -117,27 +119,39 @@ bool PresetsCommandExecutor::executeCommand(IncomingCommand* pCommand)
 
 bool PresetsCommandExecutor::restoreSequenceInCell(uint8_t cellIndex, char* commandBuffer)
 {
-	/*
-	char* secondCommBegin = 0;
-	uint8_t rgbCommandSize = 0;
-	// write first command into the buffer
-	secondCommBegin = writeRGBSequence(commandBuffer, &rgbCommandSize);
-	// write second (strobe) command into buffer
-	bool hasSecondCommand = false;
-	hasSecondCommand = writeStrobeSequence(secondCommBegin);
 	
-	if (cellIndex == 1){
-		pPlayer->saveToCell(1, hasSecondCommand, 
-			(IncomingCommand*) commandBuffer, (IncomingCommand*) secondCommBegin);
-			return true;
+	switch (cellIndex){
+		case 0: {
+			// ten mild colors without strobe
+			CalmColorsPreset preset;
+			preset.setEEPlayer(pPlayer);
+			preset.restoreSequenceInCell(cellIndex, commandBuffer);
+			break;
+		}
+		case 1: {
+			// police style pattern
+			PolicePreset preset;
+			preset.setEEPlayer(pPlayer);
+			preset.restoreSequenceInCell(cellIndex, commandBuffer);
+			break;
+		}
+		case 2: {
+			// light yellow color
+			SingleColorAndStrobePreset preset;
+			preset.setEEPlayer(pPlayer);
+			Color color;
+			Color::clear(&color);
+			color.red = 255;
+			color.green = 255; 
+			color.blue = 35;
+			preset.setColor(&color);
+			preset.restoreSequenceInCell(cellIndex, commandBuffer);
+			break;
+		}
+		default:
+			break;
 	}
-	return false;
-	*/
-	if (cellIndex == 0){
-		CalmColorsPreset preset;
-		preset.setEEPlayer(pPlayer);
-		preset.restoreSequenceInCell(cellIndex, commandBuffer);
-	}
+	
 }
 
 

@@ -50,15 +50,15 @@ char* CalmColorsPreset::writeRGBSequence(char* buffBeg, uint8_t* pSizeDst)
 	// all colors have the same duration
 	TimeInterval colorDuration;
 	colorDuration.milliseconds = 0;
-	colorDuration.seconds = 1;
+	colorDuration.seconds = 10;
 	colorDuration.minutes = 0;
 	
 	// color #1
 	//33 0 3 0xa 255 20 10
 	Color::clear(&pRec->pulseColor);
 	pRec->pulseColor.red = 255;
-	pRec->pulseColor.green = 20;
-	pRec->pulseColor.blue = 10;
+	pRec->pulseColor.green = 10;
+	pRec->pulseColor.blue = 0;
 	pRec->pulseDuration = colorDuration;
 	// move to the next color
 	pRec++;

@@ -334,10 +334,22 @@
     <Compile Include="src\comm\comm_execs\DefaultSequences\CalmColorsPreset.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\PolicePreset.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\PolicePreset.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\comm\comm_execs\DefaultSequences\Preset.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\comm\comm_execs\DefaultSequences\Preset.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\SingleColorAndStrobePreset.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\SingleColorAndStrobePreset.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\comm\comm_execs\EECommandExecutor.cpp">
