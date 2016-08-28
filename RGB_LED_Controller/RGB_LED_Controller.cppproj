@@ -20,10 +20,10 @@
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
-    <RamSnippetAddress />
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
     <preserveEEPROM>true</preserveEEPROM>
-    <OverrideVtorValue />
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
     <BootSegment>2</BootSegment>
     <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
@@ -78,6 +78,19 @@
         <board id="board.atmega328p_xplained_mini" value="Add" config="" content-id="Atmel.ASF" />
       </framework-data>
     </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
+    <avrtoolserialnumber />
+    <avrdeviceexpectedsignature>0x1E950F</avrdeviceexpectedsignature>
+    <com_atmel_avrdbg_tool_simulator>
+      <ToolOptions xmlns="">
+        <InterfaceProperties>
+        </InterfaceProperties>
+      </ToolOptions>
+      <ToolType xmlns="">com.atmel.avrdbg.tool.simulator</ToolType>
+      <ToolNumber xmlns="">
+      </ToolNumber>
+      <ToolName xmlns="">Simulator</ToolName>
+    </com_atmel_avrdbg_tool_simulator>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -378,6 +391,18 @@
     <Compile Include="src\hardware.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\hardware_drivers\keyboard\Button.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\hardware_drivers\keyboard\Button.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\hardware_drivers\keyboard\Keypad.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\hardware_drivers\keyboard\Keypad.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\hardware_drivers\RGB_Led.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -599,6 +624,7 @@
     <Folder Include="src\config\" />
     <Folder Include="src\comm" />
     <Folder Include="src\hardware_drivers" />
+    <Folder Include="src\hardware_drivers\keyboard" />
     <Folder Include="src\include" />
     <Folder Include="src\EEManager" />
     <Folder Include="src\utils" />

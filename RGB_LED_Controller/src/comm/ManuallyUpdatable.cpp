@@ -24,7 +24,7 @@ void ManuallyUpdatable::setManualUpdate(bool isManual)
 {
 	// assume entity initially is updated
 	isManualUpdateNeeded = false;
-	isManualUpdateModeActive = true;
+	isManualUpdateModeActive = isManual;
 }
 
 bool ManuallyUpdatable::isManualUpdate()

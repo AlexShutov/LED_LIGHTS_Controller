@@ -54,6 +54,27 @@
 #define FLASH_CHANNEL_PIN_NO 5
 //#define FLASH_CHANNEL_LOW_STATE_IS_ENABLED
 
+// definitions for ee player's keyboard
+// key back registers definition
+// key ID's - for distinguising keys from callback
+#define KEY_BACK 1
+#define KEY_FORWARD 2
+#define KEY_BACK_DIRECT_REGISTER &DDRC
+#define KEY_BACK_PORT_REGISTER &PORTC
+#define KEY_BACK_PIN_REGISTER &PINC
+#define KEY_BACK_IS_ADC_PIN
+// key forward registers definition
+#define KEY_FORWARD_DIRECT_REGISTER &DDRC
+#define KEY_FORWARD_PORT_REGISTER &PORTC
+#define KEY_FORWARD_PIN_REGISTER &PINC
+#define KEY_FORWARD_IS_ADC_PIN
+// number of pins for player's keyboard
+#define KEY_BACK_PIN 0
+#define KEY_FORWARD_PIN 1
+// whether key is pressed if pin in high level
+// here buttons is activated by low level
+//#define KEY_BACK_HIGH_LEVEL_ON
+//#define KEY_FORWARD_HIGH_LEVEL_ON
 
 /** Enable interrupt driven mode
  *

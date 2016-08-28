@@ -22,7 +22,7 @@ private:
 //functions
 public:
 	ManuallyUpdatable();
-	~ManuallyUpdatable();
+	virtual ~ManuallyUpdatable();
 	
 	virtual void updateManually() = 0;
 	// pass true to to activate manual update mode
