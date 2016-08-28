@@ -91,6 +91,7 @@ private:
 	// any pointer
 	bool writeStrobeSequence(char* buffBeg);
 
+	void writeCellData(uint8_t cellIndex, char* bufferBeg);
 
 }; //PresetsCommandExecutor
 

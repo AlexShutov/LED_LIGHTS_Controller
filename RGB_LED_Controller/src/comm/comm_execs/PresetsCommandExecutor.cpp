@@ -9,9 +9,12 @@
 #include "PresetsCommandExecutor.h"
 #include "../src/hardware_drivers/RGB_Led.h"
 
+#include "../src/comm/comm_execs/DefaultSequences/Preset.h"
+#include "../src/comm/comm_execs/DefaultSequences/CalmColorsPreset.h"
+
 using namespace LedCommandExecutors;
 using namespace EESupport;
-
+using namespace PresetData;
 // default constructor
 PresetsCommandExecutor::PresetsCommandExecutor()
 {
@@ -114,6 +117,7 @@ bool PresetsCommandExecutor::executeCommand(IncomingCommand* pCommand)
 
 bool PresetsCommandExecutor::restoreSequenceInCell(uint8_t cellIndex, char* commandBuffer)
 {
+	/*
 	char* secondCommBegin = 0;
 	uint8_t rgbCommandSize = 0;
 	// write first command into the buffer
@@ -128,166 +132,74 @@ bool PresetsCommandExecutor::restoreSequenceInCell(uint8_t cellIndex, char* comm
 			return true;
 	}
 	return false;
+	*/
+	if (cellIndex == 0){
+		CalmColorsPreset preset;
+		preset.setEEPlayer(pPlayer);
+		preset.restoreSequenceInCell(cellIndex, commandBuffer);
+	}
 }
+
 
 char* PresetsCommandExecutor::writeRGBSequence(char* buffBeg, uint8_t* pSizeDst)
 {
+	// allocate command header at buffer start
 	IncomingCommand* pCommand = (IncomingCommand*) buffBeg;
 	pCommand->setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
-	pCommand->setDataBlockSize(sizeof(Color));
-	CommColorHeader* pHeader = (CommColorHeader*)( pCommand + 1);
+	//	pCommand->setDataBlockSize(sizeof(Color));
+	// write data block right after command header
+	char* pDataPtr = (char*)(pCommand + 1);
+	pCommand->setBufferPtr(pDataPtr);
+	// form data
+	// all colors have the sam duration
 	
-	pHeader->isSmoothSwitch = false;
-	pHeader->numberOfLights = 2;
-	pHeader->repeat = true;
-	
-	Color* pColor = 0;
-	TimeInterval* pDuration = 0;
-	// setup sequence info
-	pHeader->isSmoothSwitch = false;
-	pHeader->repeat = true;
-	pHeader->numberOfLights = 4;
-	// calculate data block size
-	uint8_t dataBlockSize = sizeof(CommColorHeader) +
-	pHeader->numberOfLights * sizeof(CommColorSequenceRecord);
-	pCommand->setDataBlockSize(dataBlockSize);
-		
-	CommColorSequenceRecord* pRec = (CommColorSequenceRecord*) (pHeader + 1);
-	
-	// light #1
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 255;
-	pColor->green = 20;
-	pColor->blue = 10;
-	// setup duration
-		pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
+	// fill in command header
+	CommColorHeader* pHead = (CommColorHeader*) pDataPtr;
+	pHead->isSmoothSwitch = false;
+	pHead->numberOfLights = 3;
+	pHead->repeat = true;
+	CommColorSequenceRecord* pRec = (CommColorSequenceRecord*) (pHead + 1);
+	// color #1
+	Color::clear(&pRec->pulseColor);
+	// 
+	pRec->pulseColor.red = 255;
+	pRec->pulseColor.green = 0;
+	pRec->pulseColor.blue = 0;
+	pRec->pulseDuration.milliseconds = 0;
+	pRec->pulseDuration.seconds = 1;
+	pRec->pulseDuration.minutes = 0;
+	// move to the next color
 	pRec++;
-	RGB_Led::setColor(pColor);
-	// light #2
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 245;
-	pColor->green = 245;
-	pColor->blue = 22;
-	// setup duration
-	pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
+	// color #2
+	Color::clear(&pRec->pulseColor);
+	//
+	pRec->pulseColor.red = 0;
+	pRec->pulseColor.green = 255;
+	pRec->pulseColor.blue = 0;
+	pRec->pulseDuration.milliseconds = 0;
+	pRec->pulseDuration.seconds = 1;
+	pRec->pulseDuration.minutes = 0;
+	// move to the next color
 	pRec++;
+	// color #3
+	Color::clear(&pRec->pulseColor);
+	//
+	pRec->pulseColor.red = 255;
+	pRec->pulseColor.green = 255;
+	pRec->pulseColor.blue = 255;
+	pRec->pulseDuration.milliseconds = 0;
+	pRec->pulseDuration.seconds = 1;
+	pRec->pulseDuration.minutes = 0;
+	// move to the next color
+	pRec++;
+	uint8_t size = sizeof(CommColorHeader) + 2 * sizeof(CommColorSequenceRecord);
+	pCommand->setDataBlockSize(size);
 	
-	// light #3
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 51;
-	pColor->green = 255;
-	pColor->blue = 255;
-	// setup duration
-	pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
-	pRec++;
-	/*
-	// light #4
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 255;
-	pColor->green = 102;
-	pColor->blue = 0;
-	// setup duration
-	pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
-	pRec++;
+	// save command with player (it will play that command after)
+	//pPlayer->saveToCell(pCommand, cellNo, cellOffset);
 	
-	// light #5
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 10;
-	pColor->green = 255;
-	pColor->blue = 50;
-	// setup duration
-	pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
-	pRec++;
-	
-	// light #6
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 102;
-	pColor->green = 0;
-	pColor->blue = 255;
-	// setup duration
-	pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
-	pRec++;
-	
-	// light #7
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 102;
-	pColor->green = 255;
-	pColor->blue = 51;
-	// setup duration
-	pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
-	pRec++;
-	
-	// light #8
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 204;
-	pColor->green = 153;
-	pColor->blue = 0;
-	// setup duration
-	pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
-	pRec++;
-	
-	// light #9
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 10;
-	pColor->green = 255;
-	pColor->blue = 20;
-	// setup duration
-	pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
-	pRec++;
-	
-	// light #10
-	pColor = &pRec->pulseColor;
-	pDuration = &pRec->pulseDuration;
-	// setup color
-	pColor->red = 255;
-	pColor->green = 20;
-	pColor->blue = 10;
-	// setup duration
-	pDuration->milliseconds = 0;
-	pDuration->seconds = 1;
-	pDuration->minutes = 0;
-	pRec++;
-	*/
-	*pSizeDst = sizeof(IncomingCommand) + dataBlockSize;
-	char* nextCommandBeg = (char*) pRec;
-	return nextCommandBeg;
-	
+	*pSizeDst = size + sizeof(IncomingCommand);
+	return (char*)(pRec + 1);
 }
 
 bool PresetsCommandExecutor::writeStrobeSequence(char* buffBeg)

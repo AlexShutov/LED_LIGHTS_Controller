@@ -328,6 +328,18 @@
     <Compile Include="src\comm\comm_execs\CompositeChainExecutor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\CalmColorsPreset.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\CalmColorsPreset.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\Preset.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\comm\comm_execs\DefaultSequences\Preset.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\comm\comm_execs\EECommandExecutor.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -632,6 +644,7 @@
     <Folder Include="src\ASF\mega\utils\preprocessor\" />
     <Folder Include="src\comm\comm_execs" />
     <Folder Include="src\comm\comm_execs\EE" />
+    <Folder Include="src\comm\comm_execs\DefaultSequences" />
     <Folder Include="src\comm\comm_sources" />
     <Folder Include="src\config\" />
     <Folder Include="src\comm" />
