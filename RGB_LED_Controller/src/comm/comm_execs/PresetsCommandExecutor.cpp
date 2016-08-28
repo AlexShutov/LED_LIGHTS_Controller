@@ -122,8 +122,8 @@ bool PresetsCommandExecutor::restoreSequenceInCell(uint8_t cellIndex, char* comm
 	bool hasSecondCommand = false;
 	hasSecondCommand = writeStrobeSequence(secondCommBegin);
 	
-	if (cellIndex == 0){
-		pPlayer->saveToCell(0, hasSecondCommand, 
+	if (cellIndex == 1){
+		pPlayer->saveToCell(1, hasSecondCommand, 
 			(IncomingCommand*) commandBuffer, (IncomingCommand*) secondCommBegin);
 			return true;
 	}
@@ -133,26 +133,20 @@ bool PresetsCommandExecutor::restoreSequenceInCell(uint8_t cellIndex, char* comm
 char* PresetsCommandExecutor::writeRGBSequence(char* buffBeg, uint8_t* pSizeDst)
 {
 	IncomingCommand* pCommand = (IncomingCommand*) buffBeg;
-	pCommand->setCommandCode(COMMAND_CODE_CHANGE_COLOR);
+	pCommand->setCommandCode(COMMAND_CODE_LIGHT_SEQUENCE);
 	pCommand->setDataBlockSize(sizeof(Color));
-	//CommColorHeader* pHeader = (CommColorHeader*)( pCommand + 1);
-
-	Color* pColor = (Color*)( pCommand + 1);
-	pCommand->setBufferPtr((char*)pColor);
-	pColor->red = 255;
-	pColor->green = 20;
-	pColor->blue = 10;
-	RGB_Led::setColor(pColor);
-	*pSizeDst = sizeof(IncomingCommand) + sizeof(Color);
-	//return (char*) (pColor + 1);
-	return buffBeg;
-	/*
+	CommColorHeader* pHeader = (CommColorHeader*)( pCommand + 1);
+	
+	pHeader->isSmoothSwitch = false;
+	pHeader->numberOfLights = 2;
+	pHeader->repeat = true;
+	
 	Color* pColor = 0;
 	TimeInterval* pDuration = 0;
 	// setup sequence info
 	pHeader->isSmoothSwitch = false;
 	pHeader->repeat = true;
-	pHeader->numberOfLights = 1;
+	pHeader->numberOfLights = 4;
 	// calculate data block size
 	uint8_t dataBlockSize = sizeof(CommColorHeader) +
 	pHeader->numberOfLights * sizeof(CommColorSequenceRecord);
@@ -185,7 +179,7 @@ char* PresetsCommandExecutor::writeRGBSequence(char* buffBeg, uint8_t* pSizeDst)
 	pDuration->seconds = 1;
 	pDuration->minutes = 0;
 	pRec++;
-	/*
+	
 	// light #3
 	pColor = &pRec->pulseColor;
 	pDuration = &pRec->pulseDuration;
@@ -198,7 +192,7 @@ char* PresetsCommandExecutor::writeRGBSequence(char* buffBeg, uint8_t* pSizeDst)
 	pDuration->seconds = 1;
 	pDuration->minutes = 0;
 	pRec++;
-	
+	/*
 	// light #4
 	pColor = &pRec->pulseColor;
 	pDuration = &pRec->pulseDuration;
@@ -289,13 +283,11 @@ char* PresetsCommandExecutor::writeRGBSequence(char* buffBeg, uint8_t* pSizeDst)
 	pDuration->seconds = 1;
 	pDuration->minutes = 0;
 	pRec++;
-	
-	
-	
+	*/
 	*pSizeDst = sizeof(IncomingCommand) + dataBlockSize;
 	char* nextCommandBeg = (char*) pRec;
 	return nextCommandBeg;
-	*/
+	
 }
 
 bool PresetsCommandExecutor::writeStrobeSequence(char* buffBeg)

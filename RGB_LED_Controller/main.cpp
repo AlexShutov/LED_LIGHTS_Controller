@@ -52,13 +52,8 @@ int main(void)
 	// turn it off for now - until 'Presets' executor not ready
 	facade.turnOn();
 	
-	Color c;
-	c.red = 255;
-	c.green = 255;
-	c.blue = 255;
-	RGB_Led::setColor(&c);
 	
-	//facade.testPresetExec();
+	facade.testPresetExec();
 	
 	while (1) 
     {		
