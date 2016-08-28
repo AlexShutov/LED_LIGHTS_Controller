@@ -149,6 +149,8 @@ public:
 	// stop background commands (strobe flashes). For that we have a
 	// reference to strobe executor
 	void stopBackgroundCommands();
+	// We need to be able to stop all commands on user demand
+	void stopAllCommands();
 	
 	// cell can be marked as current one in data section, but 
 	// this command can be not activated yet (used during device boot)

@@ -47,6 +47,6 @@ void PlayerKeypadCallback::onStartButtonPressed()
 void PlayerKeypadCallback::onStopButtonPressed()
 {
 	if (pPlayer){
-		pPlayer->stopBackgroundCommands();
+		pPlayer->stopAllCommands();
 	}
 }

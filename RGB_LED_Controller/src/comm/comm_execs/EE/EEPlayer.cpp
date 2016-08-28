@@ -452,6 +452,21 @@ void EEPlayer::stopBackgroundCommands()
 	}
 }
 
+void EEPlayer::stopAllCommands()
+{
+	if (!pExecChain){
+		// exec chain isn't set, user forgot to set it or he or she
+		// doesn't want background executor to be cancelled
+		return;
+	}
+	uint8_t execCnt = pExecChain->getNumberOfChildren();
+	for (uint8_t i = 0; i < execCnt; ++i){
+		CommandExecutor* pCurrExec = pExecChain->getExecutorByAddingOrder(i);
+		// we need only background (not rbg) executors
+		pCurrExec->stopCommand(pCurrExec->getCommandCode());
+	}
+}
+
 void EEPlayer::saveToCell(uint8_t cellIndex, 
 						  bool isHavingBackgroundCommand, 
 						  IncomingCommand* pRGBCommandHeader, 
