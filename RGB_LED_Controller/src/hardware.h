@@ -31,7 +31,7 @@
 // Initially i've been using debug board with RGB LED, which is 'on' if pin is in
 // low state, however, now I use LED strip controlled by MOSFETS. Those are open
 // when pin is in a low state, that's why it is commented
-#define LOW_LEVEL_IS_ON 1
+//#define LOW_LEVEL_IS_ON 1
 
 /** Baud rate to use
  *

@@ -156,6 +156,19 @@ bool PresetsCommandExecutor::restoreSequenceInCell(uint8_t cellIndex, char* comm
 			preset.restoreSequenceInCell(cellIndex, commandBuffer);
 			break;
 		}
+		case 4: {
+			// mild red color:  255 10 0
+			SingleColorAndStrobePreset preset;
+			preset.setEEPlayer(pPlayer);
+			Color color;
+			Color::clear(&color);
+			color.red = 255;
+			color.green = 10;
+			color.blue = 0;
+			preset.setColor(&color);
+			preset.restoreSequenceInCell(cellIndex, commandBuffer);
+			break;
+		}
 	
 		default:
 			break;
